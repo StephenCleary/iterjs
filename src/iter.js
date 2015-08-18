@@ -180,6 +180,23 @@ iter.equal = function equal(lhs, rhs, equals = Object.is) {
 
 /* Enjoy the world of iter */
 
+iterPrototype.scan = function scan(combine, seed) {
+    const self = this;
+    return iter(function *() {
+        let index = 0;
+        let current = seed;
+        let first = true;
+        for (let item of self) {
+            if (first && seed === undefined) {
+                current = item;
+            } else {
+                current = combine(current, item, index++);
+                yield current;
+            }
+        }
+    });
+};
+
 iterPrototype.take = function take(numberOrPredicate) {
     const predicate = (typeof numberOrPredicate === 'number') ? (() => numberOrPredicate-- !== 0) : numberOrPredicate;
     const self = this;
