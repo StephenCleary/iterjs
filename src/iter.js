@@ -188,6 +188,7 @@ iterPrototype.scan = function scan(combine, seed) {
         let first = true;
         for (let item of self) {
             if (first && seed === undefined) {
+                first = false;
                 current = item;
             } else {
                 current = combine(current, item, index++);
@@ -268,7 +269,6 @@ iterPrototype.zip = function zip(...others) {
     return iter.zip(this, ...others);
 };
 
-
 iterPrototype.repeat = function repeat(count) {
     return iter.repeat(this, count).flatten();
 };
@@ -301,6 +301,18 @@ iterPrototype.first = function first(defaultValue) {
     } else {
         return defaultValue;
     }
+};
+
+iterPrototype.last = function last(defaultValue) {
+    let result = defaultValue;
+    for (let item of this) {
+        result = item;
+    }
+    return result;
+};
+
+iterPrototype.fold = function fold(combine, seed) {
+    return this.scan(combine, seed).last();
 };
 
 iterPrototype.every = function every(predicate) {
