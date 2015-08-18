@@ -131,6 +131,7 @@ iter.zip = function zip(...iterables) {
 iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     const iterL = lhs[Symbol.iterator]();
     const iterR = rhs[Symbol.iterator]();
+    let index = 0;
     while (true) {
         const nextL = iterL.next();
         const nextR = iterR.next();
@@ -143,7 +144,7 @@ iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lh
         if (nextR.done) {
             return 1;
         }
-        const result = comparer(nextL.value, nextR.value);
+        const result = comparer(nextL.value, nextR.value, index++);
         if (result < 0) {
             return -1;
         } else if (result > 0) {
@@ -162,6 +163,7 @@ iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lh
 iter.equal = function equal(lhs, rhs, equals = Object.is) {
     const iterL = lhs[Symbol.iterator]();
     const iterR = rhs[Symbol.iterator]();
+    let index = 0;
     while (true) {
         const nextL = iterL.next();
         const nextR = iterR.next();
@@ -171,7 +173,7 @@ iter.equal = function equal(lhs, rhs, equals = Object.is) {
         if (nextL.done || nextR.done) {
             return false;
         }
-        const result = equals(nextL.value, nextR.value);
+        const result = equals(nextL.value, nextR.value, index++);
         if (!result) {
             return false;
         }
@@ -362,6 +364,39 @@ iterPrototype.at = function at(index, defaultValue) {
 
 iterPrototype.fold = function fold(combine, seed) {
     return this.scan(combine, seed).last()[0];
+};
+
+iterPrototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue),
+                                       defaultMinValue = undefined, defaultMaxValue = undefined) {
+    let minIndex = -1;
+    let maxIndex = -1;
+    let minValue = defaultMinValue;
+    let maxValue = defaultMaxValue;
+    let index = 0;
+    for (let item of this) {
+        if (minIndex === -1) {
+            minIndex = maxIndex = index;
+            minValue = maxValue = item;
+        } else {
+            if (comparer(minValue, item, index) > 0) {
+                minIndex = index;
+                minValue = item;
+            }
+            if (comparer(maxValue, item, index) < 0) {
+                maxIndex = index;
+                maxValue = item;
+            }
+        }
+    }
+    return [[minValue, minIndex], [maxValue, maxIndex]];
+};
+
+iterPrototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue), defaultValue = undefined) {
+    return this.minmax(comparer, defaultValue)[0];
+};
+
+iterPrototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue), defaultValue = undefined) {
+    return this.minmax(comparer, undefined, defaultValue)[1];
 };
 
 iterPrototype.every = function every(predicate) {
