@@ -5,6 +5,7 @@
 //  If a method takes an iter, does it make sense to take an array of iters as a rest parameter?
 //  If a method takes an array of iters, does it make sense to take an iter of iters as a static method?
 // Note: no methods that cause evaluation of the entire sequence before the first result is returned. This means 'reverse', 'sort', 'join', 'distinct', and 'group' are unsupported.
+// Callbacks taking a current item should also get a current index.
 
 
 const iterPrototype = { };
@@ -179,11 +180,13 @@ iter.equal = function equal(lhs, rhs, equals = Object.is) {
 
 /* Enjoy the world of iter */
 
-iterPrototype.take = function take(num) {
+iterPrototype.take = function take(numberOrPredicate) {
+    const predicate = (typeof numberOrPredicate === 'number') ? (() => numberOrPredicate-- !== 0) : numberOrPredicate;
     const self = this;
     return iter(function *() {
+        let index = 0;
         for (let item of self) {
-            if (num-- === 0) {
+            if (!predicate(item, index++)) {
                 break;
             }
             yield item;
@@ -191,11 +194,13 @@ iterPrototype.take = function take(num) {
     });
 };
 
-iterPrototype.skip = function skip(num) {
+iterPrototype.skip = function skip(numberOrPredicate) {
+    const predicate = (typeof numberOrPredicate === 'number') ? (() => numberOrPredicate-- > 0) : numberOrPredicate;
     const self = this;
     return iter(function *() {
+        let index = 0;
         for (let item of self) {
-            if (num-- > 0) {
+            if (predicate(item, index++)) {
                 continue;
             }
             yield item;
