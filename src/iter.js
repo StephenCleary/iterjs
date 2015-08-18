@@ -198,6 +198,39 @@ iterPrototype.scan = function scan(combine, seed) {
     });
 };
 
+iterPrototype.buffer = function buffer(size) {
+    const self = this;
+    return iter(function *() {
+        let result = [];
+        for (let item of self) {
+            result.push(item);
+            if (result.length === size) {
+                yield result;
+                result = [];
+            }
+        }
+        if (result.length !== 0) {
+            yield result;
+        }
+    });
+};
+
+iterPrototype.window = function window(size) {
+    const self = this;
+    return iter(function *() {
+        const result = [];
+        for (let item of self) {
+            if (result.length === size) {
+                result.shift();
+                result.push(item);
+                yield result.slice();
+            } else {
+                result.push(item);
+            }
+        }
+    });
+};
+
 iterPrototype.take = function take(numberOrPredicate) {
     const predicate = (typeof numberOrPredicate === 'number') ? (() => numberOrPredicate-- !== 0) : numberOrPredicate;
     const self = this;
