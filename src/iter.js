@@ -330,22 +330,38 @@ iterPrototype.isEmpty = function isEmpty() {
 iterPrototype.first = function first(defaultValue) {
     const next = this[Symbol.iterator]().next();
     if (!next.done) {
-        return next.value;
+        return [next.value, 0];
     } else {
-        return defaultValue;
+        return [defaultValue, -1];
     }
 };
 
 iterPrototype.last = function last(defaultValue) {
     let result = defaultValue;
+    let index = -1;
     for (let item of this) {
         result = item;
+        ++index;
     }
-    return result;
+    return [result, index];
+};
+
+iterPrototype.find = function find(predicate, defaultValue) {
+    let index = -1;
+    for (let item of this) {
+        if (predicate(item, ++index)) {
+            return [item, index];
+        }
+    }
+    return [defaultValue, -1];
+};
+
+iterPrototype.at = function at(index, defaultValue) {
+    return find((_, i) => i === index, defaultValue);
 };
 
 iterPrototype.fold = function fold(combine, seed) {
-    return this.scan(combine, seed).last();
+    return this.scan(combine, seed).last()[0];
 };
 
 iterPrototype.every = function every(predicate) {
@@ -364,16 +380,6 @@ iterPrototype.some = function some(predicate) {
         }
     }
     return false;
-};
-
-iterPrototype.at = function at(index, defaultValue) {
-    let i = 0;
-    for (let item of this) {
-        if (i++ === index) {
-            return item;
-        }
-    }
-    return defaultValue;
 };
 
 iterPrototype.toArray = function toArray() {
