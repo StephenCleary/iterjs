@@ -128,7 +128,7 @@ iter.zip = function zip(...iterables) {
  * @param [comparer] - A callback used to compare items. If not specified, this function uses the < and > operators to compare items. The callback always receives the lhs item as its first argument and the rhs item as its second.
  * @returns {number} - Always returns 0, -1, or +1, regardless of what the comparison method returns.
  */
-iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : (lhsValue > rhsValue)) { // TODO: true/false conversions?
+iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     const iterL = lhs[Symbol.iterator]();
     const iterR = rhs[Symbol.iterator]();
     while (true) {
