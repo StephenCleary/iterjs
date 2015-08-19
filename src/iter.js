@@ -7,6 +7,10 @@
 // Note: no methods that cause evaluation of the entire sequence before the first result is returned. This means 'reverse', 'sort', 'join', 'distinct', and 'group' are unsupported.
 // Callbacks taking a current item should also get a current index.
 
+//Inspirations:
+// - C# LINQ
+// - Python itertools
+// - C++ STL
 
 const iterPrototype = { };
 
@@ -121,6 +125,8 @@ iter.zip = function zip(...iterables) {
 
 /* Utilities */
 
+// TODO: ensure these have instance overloads, too.
+
 /**
  * Performs a lexicographical comparison of two iterables. Returns -1 if the first iterable is less than the second; +1 if the first iterable is greater than the second; and 0 if both iterables are equivalent.
  * @param {iterable} lhs - The first iterable to compare.
@@ -144,7 +150,8 @@ iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lh
         if (nextR.done) {
             return 1;
         }
-        const result = comparer(nextL.value, nextR.value, index++);
+        const result = comparer(nextL.value, nextR.value, index, index);
+        ++index;
         if (result < 0) {
             return -1;
         } else if (result > 0) {
@@ -173,11 +180,202 @@ iter.equal = function equal(lhs, rhs, equals = Object.is) {
         if (nextL.done || nextR.done) {
             return false;
         }
-        const result = equals(nextL.value, nextR.value, index++);
+        const result = equals(nextL.value, nextR.value, index, index);
+        ++index;
         if (!result) {
             return false;
         }
     }
+};
+
+iter.merge = function merge(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
+    return iter(function *() {
+        const iterL = lhs[Symbol.iterator]();
+        const iterR = rhs[Symbol.iterator]();
+        let indexL = 0;
+        let indexR = 0;
+        let nextL = iterL.next();
+        let nextR = iterR.next();
+        while (!nextL.done || !nextR.done) {
+            if (nextL.done) {
+                yield nextR.value;
+                nextR = iterR.next();
+            } else if (nextR.done) {
+                yield nextL.value;
+                nextL = iterL.next();
+            } else {
+                const compareResult = comparer(nextL.value, nextR.value, indexL, indexR);
+                if (compareResult <= 0) {
+                    yield nextL.value;
+                    nextL = iterL.next();
+                    ++indexL;
+                }
+                if (compareResult >= 0) {
+                    yield nextR.value;
+                    nextR = iterR.next();
+                    ++indexR;
+                }
+            }
+        }
+    });
+};
+
+iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
+    const iterL = lhs[Symbol.iterator]();
+    const iterR = rhs[Symbol.iterator]();
+    let index = 0;
+    while (true) {
+        const nextL = iterL.next();
+        const nextR = iterR.next();
+        if (nextL.done && nextR.done) {
+            return [undefined, undefined, -1];
+        }
+        if (nextL.done) {
+            return [undefined, nextR.value, index];
+        }
+        if (nextR.done) {
+            return [nextL.value, undefined, index];
+        }
+        const result = equals(nextL.value, nextR.value, index, index);
+        if (!result) {
+            return [nextL.value, nextR.value, index];
+        }
+        ++index;
+    }
+};
+
+/* Set operations */
+
+iter.setUnion = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
+    return iter(function *() {
+        const iterL = lhs[Symbol.iterator]();
+        const iterR = rhs[Symbol.iterator]();
+        let indexL = 0;
+        let indexR = 0;
+        let nextL = iterL.next();
+        let nextR = iterR.next();
+        while (!nextL.done || !nextR.done) {
+            if (nextL.done) {
+                yield nextR.value;
+                nextR = iterR.next();
+            } else if (nextR.done) {
+                yield nextL.value;
+                nextL = iterL.next();
+            } else {
+                const compareResult = comparer(nextL.value, nextR.value, indexL, indexR);
+                if (compareResult < 0) {
+                    yield nextL.value;
+                    nextL = iterL.next();
+                    ++indexL;
+                } else if (compareResult > 0) {
+                    yield nextR.value;
+                    nextR = iterR.next();
+                    ++indexR;
+                } else {
+                    yield nextL.value;
+                    nextL = iterL.next();
+                    ++indexL;
+                    nextR = iterR.next();
+                    ++indexR;
+                }
+            }
+        }
+    });
+};
+
+iter.setIntersection = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
+    return iter(function *() {
+        const iterL = lhs[Symbol.iterator]();
+        const iterR = rhs[Symbol.iterator]();
+        let indexL = 0;
+        let indexR = 0;
+        let nextL = iterL.next();
+        let nextR = iterR.next();
+        while (!nextL.done && !nextR.done) {
+            const compareResult = comparer(nextL.value, nextR.value, indexL, indexR);
+            if (compareResult < 0) {
+                nextL = iterL.next();
+                ++indexL;
+            } else if (compareResult > 0) {
+                nextR = iterR.next();
+                ++indexR;
+            } else {
+                yield nextL.value;
+                nextL = iterL.next();
+                ++indexL;
+                nextR = iterR.next();
+                ++indexR;
+            }
+        }
+    });
+};
+
+iter.setSymmetricDifference = function setSymmetricDifference(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
+    return iter(function *() {
+        const iterL = lhs[Symbol.iterator]();
+        const iterR = rhs[Symbol.iterator]();
+        let indexL = 0;
+        let indexR = 0;
+        let nextL = iterL.next();
+        let nextR = iterR.next();
+        while (!nextL.done || !nextR.done) {
+            if (nextL.done) {
+                yield nextR.value;
+                nextR = iterR.next();
+            } else if (nextR.done) {
+                yield nextL.value;
+                nextL = iterL.next();
+            } else {
+                const compareResult = comparer(nextL.value, nextR.value, indexL, indexR);
+                if (compareResult < 0) {
+                    yield nextL.value;
+                    nextL = iterL.next();
+                    ++indexL;
+                } else if (compareResult > 0) {
+                    yield nextR.value;
+                    nextR = iterR.next();
+                    ++indexR;
+                } else {
+                    nextL = iterL.next();
+                    ++indexL;
+                    nextR = iterR.next();
+                    ++indexR;
+                }
+            }
+        }
+    });
+};
+
+iter.setDifference = function setDifference(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
+    return iter(function *() {
+        const iterL = lhs[Symbol.iterator]();
+        const iterR = rhs[Symbol.iterator]();
+        let indexL = 0;
+        let indexR = 0;
+        let nextL = iterL.next();
+        let nextR = iterR.next();
+        while (!nextL.done) {
+            if (nextR.done) {
+                yield nextL.value;
+                nextL = iterL.next();
+            } else {
+                const compareResult = comparer(nextL.value, nextR.value, indexL, indexR);
+                if (compareResult < 0) {
+                    yield nextL.value;
+                    nextL = iterL.next();
+                    ++indexL;
+                } else if (compareResult > 0) {
+                    nextR = iterR.next();
+                    ++indexR;
+                } else {
+                    nextL = iterL.next();
+                    ++indexL;
+                    nextR = iterR.next();
+                    ++indexR;
+                }
+            }
+        }
+    });
 };
 
 /* Enjoy the world of iter */
@@ -296,6 +494,29 @@ iterPrototype.flatten = function flatten() {
     });
 };
 
+iterPrototype.removeConsecutiveDuplicates = function removeConsecutiveDuplicates(equals = Object.is) {
+    const self = this;
+    return iter(function *() {
+        let lastValue;
+        let lastValueIndex = -1;
+        let index = 1;
+        for (let item of self) {
+            if (lastValueIndex === -1) {
+                lastValueIndex = 0;
+                lastValue = item;
+                yield lastValue;
+            } else {
+                if (equals(lastValue, item, lastValueIndex, index++)) {
+                    continue;
+                }
+                lastValueIndex = index - 1;
+                lastValue = item;
+                yield lastValue;
+            }
+        }
+    });
+};
+
 iterPrototype.concat = function concat(...others) {
     return iter.concat(this, ...others);
 };
@@ -378,11 +599,11 @@ iterPrototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsVa
             minIndex = maxIndex = index;
             minValue = maxValue = item;
         } else {
-            if (comparer(minValue, item, index) > 0) {
+            if (comparer(minValue, item, minIndex, index) > 0) {
                 minIndex = index;
                 minValue = item;
             }
-            if (comparer(maxValue, item, index) < 0) {
+            if (comparer(maxValue, item, maxIndex, index) < 0) {
                 maxIndex = index;
                 maxValue = item;
             }
@@ -392,11 +613,35 @@ iterPrototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsVa
 };
 
 iterPrototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue), defaultValue = undefined) {
-    return this.minmax(comparer, defaultValue)[0];
+    let minIndex = -1;
+    let minValue = defaultValue;
+    let index = 0;
+    for (let item of this) {
+        if (minIndex === -1) {
+            minIndex = index;
+            minValue = item;
+        } else if (comparer(minValue, item, minIndex, index) > 0) {
+            minIndex = index;
+            minValue = item;
+        }
+    }
+    return [minValue, minIndex];
 };
 
 iterPrototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue), defaultValue = undefined) {
-    return this.minmax(comparer, undefined, defaultValue)[1];
+    let maxIndex = -1;
+    let maxValue = defaultValue;
+    let index = 0;
+    for (let item of this) {
+        if (maxIndex === -1) {
+            maxIndex = index;
+            maxValue = item;
+        } else if (comparer(maxValue, item, maxIndex, index) < 0) {
+            maxIndex = index;
+            maxValue = item;
+        }
+    }
+    return [maxValue, maxIndex];
 };
 
 iterPrototype.every = function every(predicate) {
