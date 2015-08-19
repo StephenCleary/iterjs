@@ -125,8 +125,6 @@ iter.zip = function zip(...iterables) {
 
 /* Utilities */
 
-// TODO: ensure these have instance overloads, too.
-
 /**
  * Performs a lexicographical comparison of two iterables. Returns -1 if the first iterable is less than the second; +1 if the first iterable is greater than the second; and 0 if both iterables are equivalent.
  * @param {iterable} lhs - The first iterable to compare.
@@ -529,6 +527,26 @@ iterPrototype.repeat = function repeat(count) {
     return iter.repeat(this, count).flatten();
 };
 
+iterPrototype.mergeWith = function mergeWith(otherIterable, comparer) {
+    return iter.merge(this, otherIterable, comparer);
+};
+
+iterPrototype.setUnionWith = function setUnionWith(otherIterable, comparer) {
+    return iter.setUnion(this, otherIterable, comparer);
+};
+
+iterPrototype.setIntersectionWith = function setIntersectionWith(otherIterable, comparer) {
+    return iter.setIntersection(this, otherIterable, comparer);
+};
+
+iterPrototype.setSymmetricDifferenceWith = function setSymmetricDifferenceWith(otherIterable, comparer) {
+    return iter.setSymmetricDifference(this, otherIterable, comparer);
+};
+
+iterPrototype.setDifferenceWith = function setDifferenceWith(otherIterable, comparer) {
+    return iter.setDifference(this, otherIterable, comparer);
+};
+
 /* Leave the world of iter */
 
 iterPrototype.forEach = function forEach(fn = () => {}) {
@@ -692,6 +710,18 @@ iterPrototype.toMap = function toMap(keySelector, valueSelector) {
 
 iterPrototype.toSet = function toSet() {
     return new Set(this);
+};
+
+iterPrototype.compareTo = function compareTo(otherIterable, comparer) {
+    return iter.compare(this, otherIterable, comparer);
+};
+
+iterPrototype.equalTo = function equalTo(otherIterable, equals) {
+    return iter.equal(this, otherIterable, equals);
+};
+
+iterPrototype.findMismatchWith = function findMismatchWith(otherIterable, equals) {
+    return iter.findMismatch(this, otherIterable, equals);
 };
 
 export default iter;
