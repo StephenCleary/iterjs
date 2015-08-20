@@ -1,0 +1,24 @@
+{
+  "name": "iterjs",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StephenCleary/iterjs"
+  },
+  "author": "Stephen Cleary <github.ourteddybear@xoxy.net> (http://stephencleary.com/)",
+  "description": "An ES6 library for working with iterables and generator functions",
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "jsdoc-to-markdown": "^1.1.1",
+    "mocha": "^2.2.5"
+  },
+  "scripts": {
+    "test": "mocha --bail --compilers js:babel/register",
+    "docs": "jsdoc2md src/*.js > api.md"
+  },
+  "keywords": [
+    "iterable",
+    "iter",
+    "generator"
+  ]
+}

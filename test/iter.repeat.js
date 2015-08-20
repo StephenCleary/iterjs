@@ -36,4 +36,27 @@ describe('iter.repeat', function() {
             assert.equal(next.done, false);
         });
     });
+
+    describe('when count is 1', function () {
+        it('should contain a single value', function () {
+            const it = iter.repeat('x', 1);
+
+            const iterator = it[Symbol.iterator]();
+            let next = iterator.next();
+            assert.equal(next.done, false);
+            assert.equal(next.value, 'x');
+            next = iterator.next();
+            assert.equal(next.done, true);
+        });
+    });
+
+    describe('when count is 0', function () {
+        it('should contain a single value', function () {
+            const it = iter.repeat('x', 0);
+
+            const iterator = it[Symbol.iterator]();
+            let next = iterator.next();
+            assert.equal(next.done, true);
+        });
+    });
 });

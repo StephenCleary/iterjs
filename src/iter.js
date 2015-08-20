@@ -17,19 +17,71 @@ const iterPrototype = { };
 /* Enter the world of iter */
 
 /**
- * An iterable, either an array, string, map, set, typed array, or some other object that has an @@iterator method.
- * @typedef {(*[]|String|Map|Set|Object)} iterable
- * /
+ * An iterable; any object that has an @@iterator method.
+ * @typedef {(Array|String|Map|Set|Object)} iterable
+ */
 
 /**
  * An iterable object that has a prototype providing extended functionality from iter.js.
- * @typedef {Object} iter
+ * @typedef {Object} iter_type
+ */
+
+/**
+ * A callback used to compare two values.
+ * @callback comparer
+ * @param {*} lhsValue The "left-hand" value to compare.
+ * @param {*} rhsValue The "right-hand" value to compare.
+ * @param {*} [lhsIndex] The index of the left-hand value in its source iterable. This parameter is always passed, but is not usually needed.
+ * @param {*} [rhsIndex] The index of the right-hand value it its source iterable. This parameter is always passed, but is not usually needed.
+ * @returns {number} A number which is less than zero if lhsValue < rhsValue; greater than zero if lhsValue > rhsValue; and zero if lhsValue is equivalent to rhsValue.
+ */
+
+/**
+ * A callback used to determine whether two values are equivalent.
+ * @callback equals
+ * @param {*} lhsValue The "left-hand" value to compare.
+ * @param {*} rhsValue The "right-hand" value to compare.
+ * @param {*} [lhsIndex] The index of the left-hand value in its source iterable. This parameter is always passed, but is not usually needed.
+ * @param {*} [rhsIndex] The index of the right-hand value it its source iterable. This parameter is always passed, but is not usually needed.
+ * @returns {boolean} True if lhsValue is equivalent to rhsValue.
+ */
+
+/**
+ * A callback used to combine/accumulate a value over an iter.
+ * @callback combine
+ * @param {*} current The current value of the combination.
+ * @param {*} value The value from the iter to combine with the current value.
+ * @param {*} [index] The index of the value from the iter. This parameter is always passed, but is not usually needed.
+ * @returns {*} The new current value of the combination.
+ */
+
+/**
+ * A callback used to evaluate a value in an iter and return a true/false designation.
+ * @callback predicate
+ * @param {*} value The value from the iter to evaluate.
+ * @param {*} [index] The index of the value from the iter. This parameter is always passed, but is not usually needed.
+ * @returns {boolean}
+ */
+
+/**
+ * A callback used to respond to a value in an iter. Any return value is ignored.
+ * @callback process
+ * @param {*} value The value from the iter to process.
+ * @param {*} [index] The index of the value from the iter. This parameter is always passed, but is not usually needed.
+ */
+
+/**
+ * A callback used to transform a value in an iter into a new value.
+ * @callback transform
+ * @param {*} value The value from the iter to transform.
+ * @param {*} [index] The index of the value from the iter. This parameter is always passed, but is not usually needed.
+ * @returns {*} The new value.
  */
 
 /**
  * Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter.
- * @param {(Object|GeneratorFunction)} [fnOrObject] - If undefined, the returned iter is empty. If an iterable object, the returned iter is a wrapper around that iterable. If a generator function, the returned iter is a wrapper around that function.
- * @returns {iter}
+ * @param {(Object|GeneratorFunction)} [fnOrObject] If undefined, the returned iter is empty. If an iterable object, the returned iter is a wrapper around that iterable. If a generator function, the returned iter is a wrapper around that function.
+ * @returns {iter_type}
  */
 function iter(fnOrObject = []) {
     const result = Object.create(iterPrototype);
@@ -43,8 +95,8 @@ function iter(fnOrObject = []) {
 
 /**
  * Creates an iter that iterates a series of values.
- * @param {...*} items - The item values to iterate over.
- * @returns {iter}
+ * @param {...*} items The values to iterate over. If no values are passed to this function, then the returned iter is empty.
+ * @returns {iter_type}
  */
 iter.values = function values(...items) {
     return iter(items);
@@ -52,9 +104,9 @@ iter.values = function values(...items) {
 
 /**
  * Creates an iter that iterates a range of integer values.
- * @param {Number} start - An integer indicating the (inclusive) first value of the iter.
- * @param {Number} [end] - An optional integer indicating the (exclusive) end value of the iter. If not specified, the returned iter is infinite.
- * @returns {iter}
+ * @param {Number} start An integer indicating the (inclusive) first value of the iter.
+ * @param {Number} [end] An optional integer indicating the (exclusive) end value of the iter. If not specified, the returned iter is infinite.
+ * @returns {iter_type}
  */
 iter.range = function range(start, end) {
     return iter(function *() {
@@ -66,9 +118,9 @@ iter.range = function range(start, end) {
 
 /**
  * Creates an iter that repeats a value.
- * @param {*} value - The value that is repeated in the iter.
- * @param {Number} [count] - The number of times the value is repeated. If not specified, the returned iter repeates indefinitely.
- * @returns {iter}
+ * @param {*} value The value that is repeated in the iter.
+ * @param {Number} [count] The number of times the value is repeated. If not specified, the returned iter repeats indefinitely. If the count is 0, the returned iter is empty.
+ * @returns {iter_type}
  */
 iter.repeat = function repeat(value, count) {
     return iter(function *() {
@@ -81,8 +133,8 @@ iter.repeat = function repeat(value, count) {
 
 /**
  * Creates an iter that is a concatenation of any number of iterables.
- * @param {...iterable} iterables - The iterables to concatenate.
- * @returns {iter}
+ * @param {...iterable} iterables The iterables to concatenate. If no iterables are passed to this function, then the returned iter is empty.
+ * @returns {iter_type}
  */
 iter.concat = function concat(...iterables) {
     return iter(function *() {
@@ -93,10 +145,10 @@ iter.concat = function concat(...iterables) {
 };
 
 /**
- * Creates an iter that combines corresponding items from any number of iterables.
- * The resulting iter will yield arrays for its items, where the element of each array is the value retrieved from the corresponding iterable passed to this function.
- * @param {...iterable} iterables - The iterables to zip.
- * @returns {iter}
+ * Creates an iter that combines corresponding values from any number of iterables.
+ * The resulting iter will yield arrays for its values, where the element of each array is the value retrieved from the corresponding iterable passed to this function.
+ * @param {...iterable} iterables The iterables to zip. If no iterables are passed to this function, then the returned iter is empty.
+ * @returns {iter_type}
  */
 iter.zip = function zip(...iterables) {
     return iter(function *() {
@@ -127,10 +179,10 @@ iter.zip = function zip(...iterables) {
 
 /**
  * Performs a lexicographical comparison of two iterables. Returns -1 if the first iterable is less than the second; +1 if the first iterable is greater than the second; and 0 if both iterables are equivalent.
- * @param {iterable} lhs - The first iterable to compare.
- * @param {iterable} rhs - The second iterable to compare.
- * @param [comparer] - A callback used to compare items. If not specified, this function uses the < and > operators to compare items. The callback always receives the lhs item as its first argument and the rhs item as its second.
- * @returns {number} - Always returns 0, -1, or +1, regardless of what the comparison method returns.
+ * @param {iterable} lhs The first iterable to compare.
+ * @param {iterable} rhs The second iterable to compare.
+ * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
+ * @returns {number} Always returns 0, -1, or +1, regardless of what the comparison method returns.
  */
 iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     const iterL = lhs[Symbol.iterator]();
@@ -159,11 +211,11 @@ iter.compare = function compare(lhs, rhs, comparer = (lhsValue, rhsValue) => (lh
 };
 
 /**
- * Whether two iterables are equivalent.
- * @param {iterable} lhs - The first iterable to compare.
- * @param {iterable} rhs - The second iterable to compare.
- * @param [equals] - A callback used to determine item equality. If not specified, this function uses "Object.is". The callback always receives the lhs item as its first argument and the rhs item as its second.
- * @returns {boolean} - Always returns true or false.
+ * Determines whether two iterables are equivalent (are the same length and contain equivalent values in the same positions).
+ * @param {iterable} lhs The first iterable to compare.
+ * @param {iterable} rhs The second iterable to compare.
+ * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
+ * @returns {boolean}
  */
 iter.equal = function equal(lhs, rhs, equals = Object.is) {
     const iterL = lhs[Symbol.iterator]();
@@ -186,6 +238,13 @@ iter.equal = function equal(lhs, rhs, equals = Object.is) {
     }
 };
 
+/**
+ * Merges two sorted iterables into a new sorted iter. The returned iter contains all values from both source iterables, and may contain duplicates.
+ * @param {iterable} lhs The first iterable to merge.
+ * @param {iterable} rhs The second iterable to merge.
+ * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
+ * @returns {iter_type}
+ */
 iter.merge = function merge(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     return iter(function *() {
         const iterL = lhs[Symbol.iterator]();
@@ -218,6 +277,13 @@ iter.merge = function merge(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsVal
     });
 };
 
+/**
+ * Finds the first mismatch between two iterables. Returns a 3-element array containing the lhs value, the rhs value, and the index of the values.
+ * @param {iterable} lhs The first iterable to compare.
+ * @param {iterable} rhs The second iterable to compare.
+ * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
+ * @returns {[*, *, number]}
+ */
 iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
     const iterL = lhs[Symbol.iterator]();
     const iterR = rhs[Symbol.iterator]();
@@ -244,6 +310,13 @@ iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
 
 /* Set operations */
 
+/**
+ * Performs a set union of two iterables. Both source iterables must be sorted with no duplicate values.
+ * @param {iterable} lhs The first source iterable.
+ * @param {iterable} rhs The second source iterable.
+ * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
+ * @returns {iter_type}
+ */
 iter.setUnion = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     return iter(function *() {
         const iterL = lhs[Symbol.iterator]();
@@ -281,6 +354,13 @@ iter.setUnion = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValue) => (
     });
 };
 
+/**
+ * Performs a set intersection of two iterables. Both source iterables must be sorted with no duplicate values.
+ * @param {iterable} lhs The first source iterable.
+ * @param {iterable} rhs The second source iterable.
+ * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
+ * @returns {iter_type}
+ */
 iter.setIntersection = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     return iter(function *() {
         const iterL = lhs[Symbol.iterator]();
@@ -308,6 +388,13 @@ iter.setIntersection = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValu
     });
 };
 
+/**
+ * Performs a set symmetric difference of two iterables. Both source iterables must be sorted with no duplicate values.
+ * @param {iterable} lhs The first source iterable.
+ * @param {iterable} rhs The second source iterable.
+ * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
+ * @returns {iter_type}
+ */
 iter.setSymmetricDifference = function setSymmetricDifference(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     return iter(function *() {
         const iterL = lhs[Symbol.iterator]();
@@ -344,6 +431,13 @@ iter.setSymmetricDifference = function setSymmetricDifference(lhs, rhs, comparer
     });
 };
 
+/**
+ * Performs a set difference of two iterables, returning an iter containing only values from the first source iterable that are not in the second source iterable. Both source iterables must be sorted with no duplicate values.
+ * @param {iterable} lhs The first source iterable.
+ * @param {iterable} rhs The second source iterable.
+ * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
+ * @returns {iter_type}
+ */
 iter.setDifference = function setDifference(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     return iter(function *() {
         const iterL = lhs[Symbol.iterator]();
@@ -378,24 +472,34 @@ iter.setDifference = function setDifference(lhs, rhs, comparer = (lhsValue, rhsV
 
 /* Enjoy the world of iter */
 
+/**
+ * Applies a combiner/accumulator function over an iter. Returns an iter containing the values of the combination.
+ * @param {combine} combine The callback used to combine values.
+ * @param {*} [seed] The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter.
+ * @returns {iter_type}
+ */
 iterPrototype.scan = function scan(combine, seed) {
     const self = this;
     return iter(function *() {
         let index = 0;
         let current = seed;
-        let first = true;
         for (let item of self) {
-            if (first && seed === undefined) {
-                first = false;
+            if (index === 0 && seed === undefined) {
                 current = item;
             } else {
-                current = combine(current, item, index++);
+                current = combine(current, item, index);
                 yield current;
             }
+            ++index;
         }
     });
 };
 
+/**
+ * Breaks an iter into buffers. The values of the returned iter are all arrays of the specified size, except for the last value which may be a smaller array containing the last few values.
+ * @param {number} size The buffer size.
+ * @returns {iter_type}
+ */
 iterPrototype.buffer = function buffer(size) {
     const self = this;
     return iter(function *() {
@@ -413,6 +517,11 @@ iterPrototype.buffer = function buffer(size) {
     });
 };
 
+/**
+ * Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are already shallow-copied, so they can be safely mutated by consuming code.
+ * @param {number} size The size of the window.
+ * @returns {iter_type}
+ */
 iterPrototype.window = function window(size) {
     const self = this;
     return iter(function *() {
@@ -429,6 +538,11 @@ iterPrototype.window = function window(size) {
     });
 };
 
+/**
+ * Takes a number of values from this iter, and discards all later values.
+ * @param {number|predicate} numberOrPredicate If a number, then this is the number of values to take from the iter. If a predicate, then values are taken from the iter as long as the predicate returns true. As soon as it returns false, the returned iter ends.
+ * @returns {iter_type}
+ */
 iterPrototype.take = function take(numberOrPredicate) {
     const predicate = (typeof numberOrPredicate === 'number') ? (() => numberOrPredicate-- !== 0) : numberOrPredicate;
     const self = this;
@@ -443,20 +557,34 @@ iterPrototype.take = function take(numberOrPredicate) {
     });
 };
 
+/**
+ * Skips over a number of values from this iter, and then yields all later values.
+ * @param {number|predicate} numberOrPredicate If a number, then this is the number of values to skip over from the iter. If a predicate, then values are skipped over from the iter as long as the predicate returns true. As soon as it returns false, the returned iter yields all later values.
+ * @returns {iter_type}
+ */
 iterPrototype.skip = function skip(numberOrPredicate) {
     const predicate = (typeof numberOrPredicate === 'number') ? (() => numberOrPredicate-- > 0) : numberOrPredicate;
     const self = this;
     return iter(function *() {
         let index = 0;
+        let doneSkipping = false;
         for (let item of self) {
-            if (predicate(item, index++)) {
-                continue;
+            if (!doneSkipping) {
+                if (predicate(item, index++)) {
+                    continue;
+                }
+                doneSkipping = true;
             }
             yield item;
         }
     });
 };
 
+/**
+ * Applies a transformation function to each value in an iter. The returned iter contains the transformed values.
+ * @param {transform} transform The transformation function to apply.
+ * @returns {iter_type}
+ */
 iterPrototype.map = function map(transform) {
     const self = this;
     return iter(function *() {
@@ -467,6 +595,11 @@ iterPrototype.map = function map(transform) {
     });
 };
 
+/**
+ * Filters an iter based on a predicate function. The returned iter contains only values for which the predicate function returns true.
+ * @param {predicate} predicate The predicate function used to determine whether each value is in the returned iter.
+ * @returns {iter_type}
+ */
 iterPrototype.filter = function filter(predicate) {
     const self = this;
     return iter(function *() {
@@ -479,7 +612,7 @@ iterPrototype.filter = function filter(predicate) {
     });
 };
 
-iterPrototype.do = function _do(fn) {
+iterPrototype.do = function _do(process) {
     return this.map((item, index) => { fn(item, index); return item; });
 };
 
