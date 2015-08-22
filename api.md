@@ -63,11 +63,11 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.concat(...others)](#iter+concat) ⇒ <code>[iter_type](#iter_type)</code>
     * [.zip(...others)](#iter+zip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.repeat([count])](#iter+repeat) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.mergeWith(otherIterable, [comparer])](#iter+mergeWith) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setUnionWith(otherIterable, [comparer])](#iter+setUnionWith) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setIntersectionWith(otherIterable, [comparer])](#iter+setIntersectionWith) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setSymmetricDifferenceWith(otherIterable, [comparer])](#iter+setSymmetricDifferenceWith) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setDifferenceWith(otherIterable, [comparer])](#iter+setDifferenceWith) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.merge(otherIterable, [comparer])](#iter+merge) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.setUnion(otherIterable, [comparer])](#iter+setUnion) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.setIntersection(otherIterable, [comparer])](#iter+setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.setSymmetricDifference(otherIterable, [comparer])](#iter+setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.setDifference(otherIterable, [comparer])](#iter+setDifference) ⇒ <code>[iter_type](#iter_type)</code>
     * [.forEach([process])](#iter+forEach)
     * [.length()](#iter+length) ⇒ <code>number</code>
     * [.isEmpty()](#iter+isEmpty) ⇒ <code>boolean</code>
@@ -85,9 +85,9 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>Object</code>
     * [.toMap(keySelector, [valueSelector])](#iter+toMap) ⇒ <code>Map</code>
     * [.toSet()](#iter+toSet) ⇒ <code>Set</code>
-    * [.compareTo(otherIterable, [comparer])](#iter+compareTo) ⇒ <code>number</code>
-    * [.equalTo(otherIterable, [equals])](#iter+equalTo) ⇒ <code>boolean</code>
-    * [.findMismatchWith(otherIterable, [equals])](#iter+findMismatchWith) ⇒ <code>Object</code>
+    * [.compare(otherIterable, [comparer])](#iter+compare) ⇒ <code>number</code>
+    * [.equal(otherIterable, [equals])](#iter+equal) ⇒ <code>boolean</code>
+    * [.findMismatch(otherIterable, [equals])](#iter+findMismatch) ⇒ <code>Object</code>
   * _static_
     * [.values(...items)](#iter.values) ⇒ <code>[iter_type](#iter_type)</code>
     * [.range(start, [end])](#iter.range) ⇒ <code>[iter_type](#iter_type)</code>
@@ -229,8 +229,8 @@ Repeats the values in this iter the specified number of times. Note that this it
 | --- | --- | --- |
 | [count] | <code>number</code> | The number of times the value is repeated. If not specified, the returned iter repeats indefinitely. If the count is 0, the returned iter is empty. |
 
-<a name="iter+mergeWith"></a>
-### iter.mergeWith(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
+<a name="iter+merge"></a>
+### iter.merge(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
 Merges this sorted iter with another sorted iterable, returning a new sorted iter. The returned iter contains all values from both source iterables, and may contain duplicates.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -240,8 +240,8 @@ Merges this sorted iter with another sorted iterable, returning a new sorted ite
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable to merge. |
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+setUnionWith"></a>
-### iter.setUnionWith(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
+<a name="iter+setUnion"></a>
+### iter.setUnion(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
 Performs a set union of this iter with another iterable. Both source iterables must be sorted with no duplicate values.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -251,8 +251,8 @@ Performs a set union of this iter with another iterable. Both source iterables m
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+setIntersectionWith"></a>
-### iter.setIntersectionWith(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
+<a name="iter+setIntersection"></a>
+### iter.setIntersection(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
 Performs a set intersection of this iter with another iterable. Both source iterables must be sorted with no duplicate values.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -262,8 +262,8 @@ Performs a set intersection of this iter with another iterable. Both source iter
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+setSymmetricDifferenceWith"></a>
-### iter.setSymmetricDifferenceWith(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
+<a name="iter+setSymmetricDifference"></a>
+### iter.setSymmetricDifference(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
 Performs a set symmetric difference of this iter with another iterable. Both source iterables must be sorted with no duplicate values.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -273,8 +273,8 @@ Performs a set symmetric difference of this iter with another iterable. Both sou
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+setDifferenceWith"></a>
-### iter.setDifferenceWith(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
+<a name="iter+setDifference"></a>
+### iter.setDifference(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
 Performs a set difference of this iter with another iterable, returning an iter containing only values from this iter that are not in the other iterable. Both source iterables must be sorted with no duplicate values.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -427,8 +427,8 @@ Builds a map from the values in this iter.
 Builds a set from the values in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
-<a name="iter+compareTo"></a>
-### iter.compareTo(otherIterable, [comparer]) ⇒ <code>number</code>
+<a name="iter+compare"></a>
+### iter.compare(otherIterable, [comparer]) ⇒ <code>number</code>
 Performs a lexicographical comparison of this iter with another iterable. Returns -1 if this iter is less than the other; +1 if this iter is greater than the other; and 0 if both are equivalent.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -439,8 +439,8 @@ Performs a lexicographical comparison of this iter with another iterable. Return
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+equalTo"></a>
-### iter.equalTo(otherIterable, [equals]) ⇒ <code>boolean</code>
+<a name="iter+equal"></a>
+### iter.equal(otherIterable, [equals]) ⇒ <code>boolean</code>
 Determines whether this iter is equivalent to another iterable (that is, they are the same length and contain equivalent values in the same positions).
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -450,8 +450,8 @@ Determines whether this iter is equivalent to another iterable (that is, they ar
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
 
-<a name="iter+findMismatchWith"></a>
-### iter.findMismatchWith(otherIterable, [equals]) ⇒ <code>Object</code>
+<a name="iter+findMismatch"></a>
+### iter.findMismatch(otherIterable, [equals]) ⇒ <code>Object</code>
 Finds the first mismatch between this iter and another iterable. Returns an object containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  

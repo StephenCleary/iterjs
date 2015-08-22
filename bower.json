@@ -1,6 +1,6 @@
 {
   "name": "iterjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An ES6 library for working with iterables and generator functions",
   "main": "src/iter.js",
   "moduleType": [

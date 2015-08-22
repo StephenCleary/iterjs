@@ -98,4 +98,11 @@ describe('iter.zip', function() {
             assert.equal(next.done, true);
         });
     });
+
+    describe('instance method', function () {
+        it('should act just like the static method', function () {
+            const it = iter([5]).zip([2, 9, 11], [13, 'bob']);
+            assert.deepEqual(it.toArray(), [[5, 2, 13], [ , 9, 'bob'], [ , 11]]);
+        });
+    });
 });

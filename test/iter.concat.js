@@ -77,4 +77,11 @@ describe('iter.concat', function() {
             assert.equal(next.done, true);
         });
     });
+
+    describe('instance method', function () {
+        it('should act just like the static method', function () {
+            const it = iter([5, 7]).concat([2, 9], [13, 'bob']);
+            assert.deepEqual(it.toArray(), [5, 7, 2, 9, 13, 'bob']);
+        });
+    });
 });

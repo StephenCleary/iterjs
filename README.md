@@ -110,7 +110,7 @@ One very flexible algorithm is `scan`, which applies a "combining function" to t
     // (3 === 1 + 2), (6 === 3 + 3), (10 === 6 + 4), (15 === 10 + 5)
     const myIter = iter.range(1, 6).scan((x, y) => x + y);
     
-There's also algorithms for combining values into iterables (`buffer`, `window`) or flattening them back out (`flatten`), combining iters (`concat`, `zip`, `mergeWith`), full set operations (`setUnion`, etc), and many more!
+There's also algorithms for combining values into iterables (`buffer`, `window`) or flattening them back out (`flatten`), combining iters (`concat`, `zip`, `merge`), full set operations (`setUnion`, etc), and many more!
 
 See the [API docs](api.md) for full details.
 

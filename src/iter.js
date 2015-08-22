@@ -624,7 +624,7 @@ iter.prototype.repeat = function repeat(count) {
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
  * @returns {iter_type}
  */
-iter.prototype.mergeWith = function mergeWith(otherIterable, comparer) {
+iter.prototype.merge = function merge(otherIterable, comparer) {
     return iter.merge(this, otherIterable, comparer);
 };
 
@@ -634,7 +634,7 @@ iter.prototype.mergeWith = function mergeWith(otherIterable, comparer) {
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
  * @returns {iter_type}
  */
-iter.prototype.setUnionWith = function setUnionWith(otherIterable, comparer) {
+iter.prototype.setUnion = function setUnion(otherIterable, comparer) {
     return iter.setUnion(this, otherIterable, comparer);
 };
 
@@ -644,7 +644,7 @@ iter.prototype.setUnionWith = function setUnionWith(otherIterable, comparer) {
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
  * @returns {iter_type}
  */
-iter.prototype.setIntersectionWith = function setIntersectionWith(otherIterable, comparer) {
+iter.prototype.setIntersection = function setIntersection(otherIterable, comparer) {
     return iter.setIntersection(this, otherIterable, comparer);
 };
 
@@ -654,7 +654,7 @@ iter.prototype.setIntersectionWith = function setIntersectionWith(otherIterable,
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
  * @returns {iter_type}
  */
-iter.prototype.setSymmetricDifferenceWith = function setSymmetricDifferenceWith(otherIterable, comparer) {
+iter.prototype.setSymmetricDifference = function setSymmetricDifference(otherIterable, comparer) {
     return iter.setSymmetricDifference(this, otherIterable, comparer);
 };
 
@@ -664,7 +664,7 @@ iter.prototype.setSymmetricDifferenceWith = function setSymmetricDifferenceWith(
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
  * @returns {iter_type}
  */
-iter.prototype.setDifferenceWith = function setDifferenceWith(otherIterable, comparer) {
+iter.prototype.setDifference = function setDifference(otherIterable, comparer) {
     return iter.setDifference(this, otherIterable, comparer);
 };
 
@@ -938,7 +938,7 @@ iter.prototype.toSet = function toSet() {
  * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
  * @returns {number} Always returns 0, -1, or +1, regardless of what the comparison method returns.
  */
-iter.prototype.compareTo = function compareTo(otherIterable, comparer) {
+iter.prototype.compare = function compare(otherIterable, comparer) {
     return iter.compare(this, otherIterable, comparer);
 };
 
@@ -948,7 +948,7 @@ iter.prototype.compareTo = function compareTo(otherIterable, comparer) {
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
  * @returns {boolean}
  */
-iter.prototype.equalTo = function equalTo(otherIterable, equals) {
+iter.prototype.equal = function equal(otherIterable, equals) {
     return iter.equal(this, otherIterable, equals);
 };
 
@@ -958,7 +958,7 @@ iter.prototype.equalTo = function equalTo(otherIterable, equals) {
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
  * @returns {{lhsValue: *, rhsValue: *, index: number}}
  */
-iter.prototype.findMismatchWith = function findMismatchWith(otherIterable, equals) {
+iter.prototype.findMismatch = function findMismatch(otherIterable, equals) {
     return iter.findMismatch(this, otherIterable, equals);
 };
 

@@ -50,4 +50,11 @@ describe('iter.setSymmetricDifference', function() {
             assert.deepEqual(result.toArray(), []);
         });
     });
+
+    describe('instance method', function () {
+        it('should act just like the static method', function () {
+            const it = iter([13, 15]).setSymmetricDifference([2, 9, 11, 13]);
+            assert.deepEqual(it.toArray(), [2, 9, 11, 15]);
+        });
+    });
 });

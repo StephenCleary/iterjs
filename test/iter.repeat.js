@@ -51,7 +51,7 @@ describe('iter.repeat', function() {
     });
 
     describe('when count is 0', function () {
-        it('should contain a single value', function () {
+        it('should be empty', function () {
             const it = iter.repeat('x', 0);
 
             const iterator = it[Symbol.iterator]();
