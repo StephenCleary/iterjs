@@ -5,6 +5,7 @@
 //  If a method takes an iter, does it make sense to take an array of iters as a rest parameter?
 //  If a method takes an array of iters, does it make sense to take an iter of iters as a static method?
 // Note: no methods that cause evaluation of the entire sequence before the first result is returned. This means 'reverse', 'sort', 'join', 'distinct', and 'group' are unsupported.
+// Note: no methods that cuase multiple iteration. This means 'group' is unsupported.
 // Callbacks taking a current item should also get a current index.
 
 //Inspirations:
@@ -434,7 +435,7 @@ iter.prototype.scan = function scan(combine, seed) {
 
 /**
  * Breaks an iter into buffers. The values of the returned iter are all arrays of the specified size, except for the last value which may be a smaller array containing the last few values.
- * @param {number} size The buffer size.
+ * @param {number} size The buffer size. This must be an integer greater than 0.
  * @returns {iter_type}
  */
 iter.prototype.buffer = function buffer(size) {
@@ -455,8 +456,8 @@ iter.prototype.buffer = function buffer(size) {
 };
 
 /**
- * Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are already shallow-copied, so they can be safely mutated by consuming code.
- * @param {number} size The size of the window.
+ * Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are shallow-copied before they are yielded, so they can be safely mutated by consuming code.
+ * @param {number} size The size of the window. This must be an integer greater than 0.
  * @returns {iter_type}
  */
 iter.prototype.window = function window(size) {
@@ -467,9 +468,11 @@ iter.prototype.window = function window(size) {
             if (result.length === size) {
                 result.shift();
                 result.push(item);
-                yield result.slice();
             } else {
                 result.push(item);
+            }
+            if (result.length === size) {
+                yield result.slice();
             }
         }
     });
