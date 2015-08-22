@@ -1,0 +1,26 @@
+{
+  "name": "iterjs",
+  "version": "0.0.1",
+  "description": "An ES6 library for working with iterables and generator functions",
+  "main": "src/iter.js",
+  "moduleType": [
+    "es6"
+  ],
+  "keywords": [
+    "iterable",
+    "iter",
+    "generator"
+  ],
+  "authors": [
+    "Stephen Cleary <github.ourteddybear@xoxy.net> (http://stephencleary.com/)"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/StephenCleary/iterjs",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
