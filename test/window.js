@@ -29,4 +29,11 @@ describe('window', function() {
             assert.deepEqual(it.toArray(), [[1, 2, 3], [2, 3, 1], [3, 1, 2], [1, 2, 3], [2, 3, 2], [3, 2, 3], [2, 3, 4]]);
         });
     });
+
+    describe('multiple elements with 1-element window', function () {
+        it('returns windows', function () {
+            const it = iter([1, 2, 3, 1, 2, 3, 2, 3, 4]).window(1);
+            assert.deepEqual(it.toArray(), [[1], [2], [3], [1], [2], [3], [2], [3], [4]]);
+        });
+    });
 });

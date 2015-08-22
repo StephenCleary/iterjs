@@ -575,7 +575,7 @@ iter.prototype.flatten = function flatten() {
 };
 
 /**
- * Removes consecutive duplicates from the source iter.
+ * Removes runs of consecutive duplicates from the source iter.
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
  * @returns {iter_type}
  */
