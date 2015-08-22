@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "mocha --bail --compilers js:babel/register",
-    "docs": "jsdoc2md src/*.js > api.md"
+    "docs": "jsdoc2md src/*.js --param-list-format table > api.md"
   },
   "keywords": [
     "iterable",
