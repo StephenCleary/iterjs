@@ -1,13 +1,3 @@
-// Code rules:
-//  Never use == or !=.
-//  Carefully evaluate all uses of equality and relational operators to see if they should be allowing a user-defined operation instead.
-//  Iters can contain functions, arrays, iterables, and iters. No polymorphism over the items contained in iters (i.e., no special border cases if a variadic function is passed a single iter/iterable argument).
-//  If a method takes an iter, does it make sense to take an array of iters as a rest parameter?
-//  If a method takes an array of iters, does it make sense to take an iter of iters as a static method?
-// Note: no methods that cause evaluation of the entire sequence before the first result is returned. This means 'reverse', 'sort', 'join', 'distinct', and 'group' are unsupported.
-// Note: no methods that cuase multiple iteration. This means 'group' is unsupported.
-// Callbacks taking a current item should also get a current index.
-
 //Inspirations:
 // - C# LINQ
 // - Python itertools
@@ -16,12 +6,12 @@
 /* Enter the world of iter */
 
 /**
- * Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter.
+ * Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter. This function can also be used to extend objects; if it is provided a "this" value, it will extend that object rather than creating a new iter.
  * @param {(Object|GeneratorFunction)} [fnOrObject] If undefined, the returned iter is empty. If an iterable object, the returned iter is a wrapper around that iterable. If a generator function, the returned iter is a wrapper around that function.
  * @returns {iter_type}
  */
 function iter(fnOrObject = []) {
-    const result = Object.create(iter.prototype);
+    const result = this || Object.create(iter.prototype);
     if (typeof fnOrObject === 'function') {
         result[Symbol.iterator] = fnOrObject;
     } else {
@@ -215,14 +205,13 @@ iter.merge = function merge(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsVal
 };
 
 /**
- * Finds the first mismatch between two iterables. Returns a 3-element array containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then the default value parameter is returned along with an index of -1.
+ * Finds the first mismatch between two iterables. Returns an object containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
  * @param {iterable} lhs The first iterable to compare.
  * @param {iterable} rhs The second iterable to compare.
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
- * @param {*} [defaultValue] The value to return if no mismatch is found.
- * @returns {Array}
+ * @returns {{lhsValue: *, rhsValue: *, index: number}}
  */
-iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is, defaultValue = undefined) {
+iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
     const iterL = lhs[Symbol.iterator]();
     const iterR = rhs[Symbol.iterator]();
     let index = 0;
@@ -230,17 +219,17 @@ iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is, defaultV
         const nextL = iterL.next();
         const nextR = iterR.next();
         if (nextL.done && nextR.done) {
-            return [defaultValue, defaultValue, -1];
+            return null;
         }
         if (nextL.done) {
-            return [undefined, nextR.value, index];
+            return { lhsValue: undefined, rhsValue: nextR.value, index };
         }
         if (nextR.done) {
-            return [nextL.value, undefined, index];
+            return { lhsValue: nextL.value, rhsValue: undefined, index };
         }
         const result = equals(nextL.value, nextR.value, index, index);
         if (!result) {
-            return [nextL.value, nextR.value, index];
+            return { lhsValue: nextL.value, rhsValue: nextR.value, index };
         }
         ++index;
     }
@@ -621,7 +610,7 @@ iter.prototype.zip = function zip(...others) {
 };
 
 /**
- * Repeats the values in this iter the specified number of times.
+ * Repeats the values in this iter the specified number of times. Note that this iter is evaluated multiple times.
  * @param {number} [count] The number of times the value is repeated. If not specified, the returned iter repeats indefinitely. If the count is 0, the returned iter is empty.
  * @returns {iter_type}
  */
@@ -713,58 +702,57 @@ iter.prototype.isEmpty = function isEmpty() {
 };
 
 /**
- * Returns the first value in this iter, along with its index. If this iter is empty, this function returns the default value parameter with an index of -1. If this iter is not empty, the returned index is always 0.
- * @param {*} [defaultValue] The value to return if this iter is empty.
+ * Returns the first value in this iter, along with its index. If this iter is empty, this function returns null. If this iter is not empty, the returned index is always 0.
  * @returns {find_result}
  */
-iter.prototype.first = function first(defaultValue) {
+iter.prototype.first = function first() {
     const next = this[Symbol.iterator]().next();
     if (!next.done) {
-        return [next.value, 0];
+        return { value: next.value, index: 0 };
     } else {
-        return [defaultValue, -1];
+        return null;
     }
 };
 
 /**
- * Returns the last value in this iter, along with its index. If this iter is empty, this function returns the default value parameter with an index of -1.
- * @param {*} [defaultValue] The value to return if this iter is empty.
+ * Returns the last value in this iter, along with its index. If this iter is empty, this function returns null.
  * @returns {find_result}
  */
-iter.prototype.last = function last(defaultValue) {
-    let result = defaultValue;
+iter.prototype.last = function last() {
+    let value;
     let index = -1;
     for (let item of this) {
-        result = item;
+        value = item;
         ++index;
     }
-    return [result, index];
+    if (index === -1) {
+        return null;
+    }
+    return { value, index };
 };
 
 /**
- * Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+ * Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns null.
  * @param {predicate} predicate The function used to determine whether this is the value we're searching for.
- * @param {*} [defaultValue] The value to return if this iter is empty.
  * @returns {find_result}
  */
-iter.prototype.find = function find(predicate, defaultValue) {
+iter.prototype.find = function find(predicate) {
     let index = -1;
-    for (let item of this) {
-        if (predicate(item, ++index)) {
-            return [item, index];
+    for (let value of this) {
+        if (predicate(value, ++index)) {
+            return { value, index };
         }
     }
-    return [defaultValue, -1];
+    return null;
 };
 
 /**
- * Returns a specified value from this iter. If this iter is empty, this function returns the default value parameter with an index of -1.
+ * Returns a specified value from this iter. If this iter is empty, this function returns null.
  * @param {number} index The index of the value to return.
- * @param {*} [defaultValue] The value to return if this iter is empty.
  * @returns {find_result}
  */
-iter.prototype.at = function at(index, defaultValue) {
-    return find((_, i) => i === index, defaultValue);
+iter.prototype.at = function at(index) {
+    return find((_, i) => i === index);
 };
 
 /**
@@ -774,22 +762,19 @@ iter.prototype.at = function at(index, defaultValue) {
  * @returns {*}
  */
 iter.prototype.fold = function fold(combine, seed) {
-    return this.scan(combine, seed).last()[0];
+    return this.scan(combine, seed).last().value;
 };
 
 /**
- * Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns the default value parameters with indexes of -1.
+ * Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
  * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
- * @param {*} [defaultMinValue] The value to return for the minimum value if this iter is empty.
- * @param {*} [defaultMaxValue] The value to return for the maximum value if this iter is empty.
- * @returns {find_result[]}
+ * @returns {{min:find_result, max:find_result}}
  */
-iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue),
-                                       defaultMinValue = undefined, defaultMaxValue = undefined) {
+iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     let minIndex = -1;
     let maxIndex = -1;
-    let minValue = defaultMinValue;
-    let maxValue = defaultMaxValue;
+    let minValue;
+    let maxValue;
     let index = 0;
     for (let item of this) {
         if (minIndex === -1) {
@@ -806,18 +791,20 @@ iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsV
             }
         }
     }
-    return [[minValue, minIndex], [maxValue, maxIndex]];
+    if (minIndex === -1) {
+        return null;
+    }
+    return { min: { value: minValue, index: minIndex }, max: { value: maxValue, index: maxIndex } };
 };
 
 /**
- * Determines the minimum value in this iter. Returns the minimum value and its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+ * Determines the minimum value in this iter. Returns the minimum value and its index. If this iter is empty, this function returns null.
  * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
- * @param {*} [defaultValue] The value to return if this iter is empty.
  * @returns {find_result}
  */
-iter.prototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue), defaultValue = undefined) {
+iter.prototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     let minIndex = -1;
-    let minValue = defaultValue;
+    let minValue;
     let index = 0;
     for (let item of this) {
         if (minIndex === -1) {
@@ -828,18 +815,20 @@ iter.prototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue <
             minValue = item;
         }
     }
-    return [minValue, minIndex];
+    if (minIndex === -1) {
+        return null;
+    }
+    return { value: minValue, index: minIndex };
 };
 
 /**
- * Determines the maximum value in this iter. Returns the maximum value and its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+ * Determines the maximum value in this iter. Returns the maximum value and its index. If this iter is empty, this function returns null.
  * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
- * @param {*} [defaultValue] The value to return if this iter is empty.
  * @returns {find_result}
  */
-iter.prototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue), defaultValue = undefined) {
+iter.prototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     let maxIndex = -1;
-    let maxValue = defaultValue;
+    let maxValue;
     let index = 0;
     for (let item of this) {
         if (maxIndex === -1) {
@@ -850,7 +839,10 @@ iter.prototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue <
             maxValue = item;
         }
     }
-    return [maxValue, maxIndex];
+    if (maxIndex === -1) {
+        return null;
+    }
+    return { value: maxValue, index: maxIndex };
 };
 
 /**
@@ -897,10 +889,10 @@ iter.prototype.toArray = function toArray() {
  * Transforms an iterable of values into an iterable of key/value pairs.
  * @param {iterable} it The source iterable.
  * @param {transform} keySelector The function to get a key from the iterable value.
- * @param {transform} valueSelector The function to get a value from the iterable value.
+ * @param {transform} [valueSelector] The function to get a value from the iterable value. If not specified, the iter values are used as the values.
  * @private
  */
-function *keyValuePairs(it, keySelector, valueSelector) {
+function *keyValuePairs(it, keySelector, valueSelector = x => x) {
     let index = 0;
     for (let item of it) {
         yield [keySelector(item, index), valueSelector(item, index)];
@@ -911,10 +903,10 @@ function *keyValuePairs(it, keySelector, valueSelector) {
 /**
  * Builds an object from the values in this iter.
  * @param {transformString} nameSelector A function used to get the property name from a value in this iter.
- * @param {transform} valueSelector A function used to get the property value from a value in this iter.
+ * @param {transform} [valueSelector] A function used to get the property value from a value in this iter. If not specified, the iter values are used as the property values.
  * @returns {{}}
  */
-iter.prototype.toObject = function toObject(nameSelector, valueSelector) {
+iter.prototype.toObject = function toObject(nameSelector, valueSelector = x => x) {
     const result = {};
     for (let kvp of keyValuePairs(this, nameSelector, valueSelector)) {
         result[kvp[0]] = kvp[1];
@@ -925,10 +917,10 @@ iter.prototype.toObject = function toObject(nameSelector, valueSelector) {
 /**
  * Builds a map from the values in this iter.
  * @param {transform} keySelector A function used to get the map key from a value in this iter.
- * @param {transform} valueSelector A function used to get the map value from a value in this iter.
+ * @param {transform} [valueSelector] A function used to get the map value from a value in this iter. If not specified, the iter values are used as the map values.
  * @returns {Map}
  */
-iter.prototype.toMap = function toMap(keySelector, valueSelector) {
+iter.prototype.toMap = function toMap(keySelector, valueSelector = x => x) {
     return new Map(keyValuePairs(keySelector, valueSelector));
 };
 
@@ -961,14 +953,13 @@ iter.prototype.equalTo = function equalTo(otherIterable, equals) {
 };
 
 /**
- * Finds the first mismatch between this iter and another iterable. Returns a 3-element array containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then the default value parameter is returned along with an index of -1.
+ * Finds the first mismatch between this iter and another iterable. Returns an object containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
  * @param {iterable} otherIterable The other iterable.
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
- * @param {*} [defaultValue] The value to return if no mismatch is found.
- * @returns {Array}
+ * @returns {{lhsValue: *, rhsValue: *, index: number}}
  */
-iter.prototype.findMismatchWith = function findMismatchWith(otherIterable, equals, defaultValue) {
-    return iter.findMismatch(this, otherIterable, equals, defaultValue);
+iter.prototype.findMismatchWith = function findMismatchWith(otherIterable, equals) {
+    return iter.findMismatch(this, otherIterable, equals);
 };
 
 export default iter;
@@ -984,8 +975,8 @@ export default iter;
  */
 
 /**
- * A value returned from an iterable. This is a two-element array, where the first element is the actual value, and the second element is the value's index in the iterable.
- * @typedef {Array} find_result
+ * A value returned from an iterable. This is an object containing the actual value along with the value's index in the iterable.
+ * @typedef {{value: *, index: number}} find_result
  */
 
 /**

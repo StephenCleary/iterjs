@@ -1,7 +1,7 @@
 ## Functions
 <dl>
 <dt><a href="#iter">iter([fnOrObject])</a> ⇒ <code><a href="#iter_type">iter_type</a></code></dt>
-<dd><p>Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter.</p>
+<dd><p>Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter. This function can also be used to extend objects; if it is provided a &quot;this&quot; value, it will extend that object rather than creating a new iter.</p>
 </dd>
 </dl>
 ## Typedefs
@@ -12,8 +12,8 @@
 <dt><a href="#iter_type">iter_type</a> : <code>Object</code></dt>
 <dd><p>An iterable object that has a prototype providing extended functionality from iter.js.</p>
 </dd>
-<dt><a href="#find_result">find_result</a> : <code>Array</code></dt>
-<dd><p>A value returned from an iterable. This is a two-element array, where the first element is the actual value, and the second element is the value&#39;s index in the iterable.</p>
+<dt><a href="#find_result">find_result</a> : <code>Object</code></dt>
+<dd><p>A value returned from an iterable. This is an object containing the actual value along with the value&#39;s index in the iterable.</p>
 </dd>
 <dt><a href="#comparer">comparer</a> ⇒ <code>number</code></dt>
 <dd><p>A callback used to compare two values.</p>
@@ -39,7 +39,7 @@
 </dl>
 <a name="iter"></a>
 ## iter([fnOrObject]) ⇒ <code>[iter_type](#iter_type)</code>
-Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter.
+Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter. This function can also be used to extend objects; if it is provided a "this" value, it will extend that object rather than creating a new iter.
 
 **Kind**: global function  
 
@@ -71,23 +71,23 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.forEach([process])](#iter+forEach)
     * [.length()](#iter+length) ⇒ <code>number</code>
     * [.isEmpty()](#iter+isEmpty) ⇒ <code>boolean</code>
-    * [.first([defaultValue])](#iter+first) ⇒ <code>[find_result](#find_result)</code>
-    * [.last([defaultValue])](#iter+last) ⇒ <code>[find_result](#find_result)</code>
-    * [.find(predicate, [defaultValue])](#iter+find) ⇒ <code>[find_result](#find_result)</code>
-    * [.at(index, [defaultValue])](#iter+at) ⇒ <code>[find_result](#find_result)</code>
+    * [.first()](#iter+first) ⇒ <code>[find_result](#find_result)</code>
+    * [.last()](#iter+last) ⇒ <code>[find_result](#find_result)</code>
+    * [.find(predicate)](#iter+find) ⇒ <code>[find_result](#find_result)</code>
+    * [.at(index)](#iter+at) ⇒ <code>[find_result](#find_result)</code>
     * [.fold(combine, [seed])](#iter+fold) ⇒ <code>\*</code>
-    * [.minmax([comparer], [defaultMinValue], [defaultMaxValue])](#iter+minmax) ⇒ <code>[Array.&lt;find_result&gt;](#find_result)</code>
-    * [.min([comparer], [defaultValue])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
-    * [.max([comparer], [defaultValue])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
+    * [.minmax([comparer])](#iter+minmax) ⇒ <code>Object</code>
+    * [.min([comparer])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
+    * [.max([comparer])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
     * [.every(predicate)](#iter+every) ⇒ <code>boolean</code>
     * [.some(predicate)](#iter+some) ⇒ <code>boolean</code>
     * [.toArray()](#iter+toArray) ⇒ <code>Array</code>
-    * [.toObject(nameSelector, valueSelector)](#iter+toObject) ⇒ <code>Object</code>
-    * [.toMap(keySelector, valueSelector)](#iter+toMap) ⇒ <code>Map</code>
+    * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>Object</code>
+    * [.toMap(keySelector, [valueSelector])](#iter+toMap) ⇒ <code>Map</code>
     * [.toSet()](#iter+toSet) ⇒ <code>Set</code>
     * [.compareTo(otherIterable, [comparer])](#iter+compareTo) ⇒ <code>number</code>
     * [.equalTo(otherIterable, [equals])](#iter+equalTo) ⇒ <code>boolean</code>
-    * [.findMismatchWith(otherIterable, [equals], [defaultValue])](#iter+findMismatchWith) ⇒ <code>Array</code>
+    * [.findMismatchWith(otherIterable, [equals])](#iter+findMismatchWith) ⇒ <code>Object</code>
   * _static_
     * [.values(...items)](#iter.values) ⇒ <code>[iter_type](#iter_type)</code>
     * [.range(start, [end])](#iter.range) ⇒ <code>[iter_type](#iter_type)</code>
@@ -97,7 +97,7 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.compare(lhs, rhs, [comparer])](#iter.compare) ⇒ <code>number</code>
     * [.equal(lhs, rhs, [equals])](#iter.equal) ⇒ <code>boolean</code>
     * [.merge(lhs, rhs, [comparer])](#iter.merge) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.findMismatch(lhs, rhs, [equals], [defaultValue])](#iter.findMismatch) ⇒ <code>Array</code>
+    * [.findMismatch(lhs, rhs, [equals])](#iter.findMismatch) ⇒ <code>Object</code>
     * [.setUnion(lhs, rhs, [comparer])](#iter.setUnion) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setIntersection(lhs, rhs, [comparer])](#iter.setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setSymmetricDifference(lhs, rhs, [comparer])](#iter.setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
@@ -122,17 +122,17 @@ Breaks an iter into buffers. The values of the returned iter are all arrays of t
 
 | Param | Type | Description |
 | --- | --- | --- |
-| size | <code>number</code> | The buffer size. |
+| size | <code>number</code> | The buffer size. This must be an integer greater than 0. |
 
 <a name="iter+window"></a>
 ### iter.window(size) ⇒ <code>[iter_type](#iter_type)</code>
-Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are already shallow-copied, so they can be safely mutated by consuming code.
+Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are shallow-copied before they are yielded, so they can be safely mutated by consuming code.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| size | <code>number</code> | The size of the window. |
+| size | <code>number</code> | The size of the window. This must be an integer greater than 0. |
 
 <a name="iter+take"></a>
 ### iter.take(numberOrPredicate) ⇒ <code>[iter_type](#iter_type)</code>
@@ -191,7 +191,7 @@ Takes an iter of iterables, and returns an iter that contains the values from ea
 **Kind**: instance method of <code>[iter](#iter)</code>  
 <a name="iter+removeConsecutiveDuplicates"></a>
 ### iter.removeConsecutiveDuplicates([equals]) ⇒ <code>[iter_type](#iter_type)</code>
-Removes consecutive duplicates from the source iter.
+Removes runs of consecutive duplicates from the source iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
@@ -221,7 +221,7 @@ Combines the values in this iter with corresponding values from any number of it
 
 <a name="iter+repeat"></a>
 ### iter.repeat([count]) ⇒ <code>[iter_type](#iter_type)</code>
-Repeats the values in this iter the specified number of times.
+Repeats the values in this iter the specified number of times. Note that this iter is evaluated multiple times.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
@@ -305,46 +305,34 @@ Determines whether an iter is empty.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 <a name="iter+first"></a>
-### iter.first([defaultValue]) ⇒ <code>[find_result](#find_result)</code>
-Returns the first value in this iter, along with its index. If this iter is empty, this function returns the default value parameter with an index of -1. If this iter is not empty, the returned index is always 0.
+### iter.first() ⇒ <code>[find_result](#find_result)</code>
+Returns the first value in this iter, along with its index. If this iter is empty, this function returns null. If this iter is not empty, the returned index is always 0.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [defaultValue] | <code>\*</code> | The value to return if this iter is empty. |
-
 <a name="iter+last"></a>
-### iter.last([defaultValue]) ⇒ <code>[find_result](#find_result)</code>
-Returns the last value in this iter, along with its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+### iter.last() ⇒ <code>[find_result](#find_result)</code>
+Returns the last value in this iter, along with its index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [defaultValue] | <code>\*</code> | The value to return if this iter is empty. |
-
 <a name="iter+find"></a>
-### iter.find(predicate, [defaultValue]) ⇒ <code>[find_result](#find_result)</code>
-Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+### iter.find(predicate) ⇒ <code>[find_result](#find_result)</code>
+Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | predicate | <code>[predicate](#predicate)</code> | The function used to determine whether this is the value we're searching for. |
-| [defaultValue] | <code>\*</code> | The value to return if this iter is empty. |
 
 <a name="iter+at"></a>
-### iter.at(index, [defaultValue]) ⇒ <code>[find_result](#find_result)</code>
-Returns a specified value from this iter. If this iter is empty, this function returns the default value parameter with an index of -1.
+### iter.at(index) ⇒ <code>[find_result](#find_result)</code>
+Returns a specified value from this iter. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | index | <code>number</code> | The index of the value to return. |
-| [defaultValue] | <code>\*</code> | The value to return if this iter is empty. |
 
 <a name="iter+fold"></a>
 ### iter.fold(combine, [seed]) ⇒ <code>\*</code>
@@ -358,38 +346,34 @@ Applies a combiner/accumulator function over this iter, and returns the final va
 | [seed] | <code>\*</code> | The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter. |
 
 <a name="iter+minmax"></a>
-### iter.minmax([comparer], [defaultMinValue], [defaultMaxValue]) ⇒ <code>[Array.&lt;find_result&gt;](#find_result)</code>
-Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns the default value parameters with indexes of -1.
+### iter.minmax([comparer]) ⇒ <code>Object</code>
+Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
-| [defaultMinValue] | <code>\*</code> | The value to return for the minimum value if this iter is empty. |
-| [defaultMaxValue] | <code>\*</code> | The value to return for the maximum value if this iter is empty. |
 
 <a name="iter+min"></a>
-### iter.min([comparer], [defaultValue]) ⇒ <code>[find_result](#find_result)</code>
-Determines the minimum value in this iter. Returns the minimum value and its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+### iter.min([comparer]) ⇒ <code>[find_result](#find_result)</code>
+Determines the minimum value in this iter. Returns the minimum value and its index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
-| [defaultValue] | <code>\*</code> | The value to return if this iter is empty. |
 
 <a name="iter+max"></a>
-### iter.max([comparer], [defaultValue]) ⇒ <code>[find_result](#find_result)</code>
-Determines the maximum value in this iter. Returns the maximum value and its index. If this iter is empty, this function returns the default value parameter with an index of -1.
+### iter.max([comparer]) ⇒ <code>[find_result](#find_result)</code>
+Determines the maximum value in this iter. Returns the maximum value and its index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
-| [defaultValue] | <code>\*</code> | The value to return if this iter is empty. |
 
 <a name="iter+every"></a>
 ### iter.every(predicate) ⇒ <code>boolean</code>
@@ -417,7 +401,7 @@ Builds an array from the values in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 <a name="iter+toObject"></a>
-### iter.toObject(nameSelector, valueSelector) ⇒ <code>Object</code>
+### iter.toObject(nameSelector, [valueSelector]) ⇒ <code>Object</code>
 Builds an object from the values in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -425,10 +409,10 @@ Builds an object from the values in this iter.
 | Param | Type | Description |
 | --- | --- | --- |
 | nameSelector | <code>[transformString](#transformString)</code> | A function used to get the property name from a value in this iter. |
-| valueSelector | <code>[transform](#transform)</code> | A function used to get the property value from a value in this iter. |
+| [valueSelector] | <code>[transform](#transform)</code> | A function used to get the property value from a value in this iter. If not specified, the iter values are used as the property values. |
 
 <a name="iter+toMap"></a>
-### iter.toMap(keySelector, valueSelector) ⇒ <code>Map</code>
+### iter.toMap(keySelector, [valueSelector]) ⇒ <code>Map</code>
 Builds a map from the values in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -436,7 +420,7 @@ Builds a map from the values in this iter.
 | Param | Type | Description |
 | --- | --- | --- |
 | keySelector | <code>[transform](#transform)</code> | A function used to get the map key from a value in this iter. |
-| valueSelector | <code>[transform](#transform)</code> | A function used to get the map value from a value in this iter. |
+| [valueSelector] | <code>[transform](#transform)</code> | A function used to get the map value from a value in this iter. If not specified, the iter values are used as the map values. |
 
 <a name="iter+toSet"></a>
 ### iter.toSet() ⇒ <code>Set</code>
@@ -467,8 +451,8 @@ Determines whether this iter is equivalent to another iterable (that is, they ar
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
 
 <a name="iter+findMismatchWith"></a>
-### iter.findMismatchWith(otherIterable, [equals], [defaultValue]) ⇒ <code>Array</code>
-Finds the first mismatch between this iter and another iterable. Returns a 3-element array containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then the default value parameter is returned along with an index of -1.
+### iter.findMismatchWith(otherIterable, [equals]) ⇒ <code>Object</code>
+Finds the first mismatch between this iter and another iterable. Returns an object containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
@@ -476,7 +460,6 @@ Finds the first mismatch between this iter and another iterable. Returns a 3-ele
 | --- | --- | --- |
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
-| [defaultValue] | <code>\*</code> | The value to return if no mismatch is found. |
 
 <a name="iter.values"></a>
 ### iter.values(...items) ⇒ <code>[iter_type](#iter_type)</code>
@@ -568,8 +551,8 @@ Merges two sorted iterables into a new sorted iter. The returned iter contains a
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
 <a name="iter.findMismatch"></a>
-### iter.findMismatch(lhs, rhs, [equals], [defaultValue]) ⇒ <code>Array</code>
-Finds the first mismatch between two iterables. Returns a 3-element array containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then the default value parameter is returned along with an index of -1.
+### iter.findMismatch(lhs, rhs, [equals]) ⇒ <code>Object</code>
+Finds the first mismatch between two iterables. Returns an object containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
 
 **Kind**: static method of <code>[iter](#iter)</code>  
 
@@ -578,7 +561,6 @@ Finds the first mismatch between two iterables. Returns a 3-element array contai
 | lhs | <code>[iterable](#iterable)</code> | The first iterable to compare. |
 | rhs | <code>[iterable](#iterable)</code> | The second iterable to compare. |
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
-| [defaultValue] | <code>\*</code> | The value to return if no mismatch is found. |
 
 <a name="iter.setUnion"></a>
 ### iter.setUnion(lhs, rhs, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
@@ -639,8 +621,8 @@ An iterable object that has a prototype providing extended functionality from it
 
 **Kind**: global typedef  
 <a name="find_result"></a>
-## find_result : <code>Array</code>
-A value returned from an iterable. This is a two-element array, where the first element is the actual value, and the second element is the value's index in the iterable.
+## find_result : <code>Object</code>
+A value returned from an iterable. This is an object containing the actual value along with the value's index in the iterable.
 
 **Kind**: global typedef  
 <a name="comparer"></a>
