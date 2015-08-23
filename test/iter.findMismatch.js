@@ -43,4 +43,11 @@ describe('iter.findMismatch', function() {
             assert.deepEqual(result, null);
         });
     });
+
+    describe('instance method', function () {
+        it('should act just like the static method', function () {
+            const result = iter([3, 6]).findMismatch([3, 5, 7]);
+            assert.deepEqual(result, { lhsValue: 6, rhsValue: 5, index: 1 });
+        });
+    });
 });

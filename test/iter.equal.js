@@ -43,4 +43,11 @@ describe('iter.equal', function() {
             assert.equal(result, true);
         });
     });
+
+    describe('instance method', function () {
+        it('should act just like the static method', function () {
+            const result = iter([3, 6]).equal([3, 5, 7]);
+            assert.deepEqual(result, false);
+        });
+    });
 });

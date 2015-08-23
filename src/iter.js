@@ -1,8 +1,3 @@
-//Inspirations:
-// - C# LINQ
-// - Python itertools
-// - C++ STL
-
 /* Enter the world of iter */
 
 /**

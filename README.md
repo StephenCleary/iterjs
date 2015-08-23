@@ -1,5 +1,5 @@
 # iterjs
-An ES6 library for working with iterables and generator functions
+An ES6 library for working with iterables and generator functions.
 
 ## Quickstart
 
@@ -21,9 +21,9 @@ Then, import the iterjs library:
 
 Iters are *lazily-evaluated sequences*. They allow you to create some fairly complex logic without actually having to execute it until you need to.
 
-Conceptually, iters are like enumerables in .NET, or iterables in Python or JavaScript.
+Conceptually, iters are like enumerables in .NET, or iterables in Python or JavaScript, or forward iterators in the C++ STL.
 
-Iter.js is a library of common generator algorithms (similar to .NET's LINQ or Python's itertools).
+Iter.js is a library of common generator algorithms (similar to .NET's LINQ, Python's itertools, or C++ STL's algorithms).
 
 ## Enter the World of Iter
 
