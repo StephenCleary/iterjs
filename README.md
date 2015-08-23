@@ -195,7 +195,7 @@ There's a few algorithms that perform comparisons of entire iters:
     // areEquivalent: false
     const areEquivalent = iter.equal(a, b);
     
-    // compareResult: 1
+    // compareResult: -1
     // (compare returns -1, 0, or 1)
     const compareResult = iter.compare(a, b);
     
