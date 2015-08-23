@@ -752,7 +752,7 @@ iter.prototype.find = function find(predicate) {
  * @returns {find_result}
  */
 iter.prototype.at = function at(index) {
-    return find((_, i) => i === index);
+    return this.find((_, i) => i === index);
 };
 
 /**
