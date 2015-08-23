@@ -925,7 +925,7 @@ iter.prototype.toObject = function toObject(nameSelector, valueSelector = x => x
  * @returns {Map}
  */
 iter.prototype.toMap = function toMap(keySelector, valueSelector = x => x) {
-    return new Map(keyValuePairs(keySelector, valueSelector));
+    return new Map(keyValuePairs(this, keySelector, valueSelector));
 };
 
 /**
