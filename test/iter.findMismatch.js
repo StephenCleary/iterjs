@@ -50,4 +50,13 @@ describe('iter.findMismatch', function() {
             assert.deepEqual(result, { lhsValue: 6, rhsValue: 5, index: 1 });
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter.findMismatch([3, 6], [3, 5], (x, y, xi, yi) => { seen.push([x, y, xi, yi]); return true; });
+            assert.deepEqual(result, null);
+            assert.deepEqual(seen, [[3, 3, 0, 0], [6, 5, 1, 1]]);
+        });
+    });
 });

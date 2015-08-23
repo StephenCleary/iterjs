@@ -57,4 +57,13 @@ describe('iter.setIntersection', function() {
             assert.deepEqual(it.toArray(), [13]);
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter.setIntersection([3, 6], [3, 5], (x, y, xi, yi) => { seen.push([x, y, xi, yi]); return 1; });
+            assert.deepEqual(result.toArray(), []);
+            assert.deepEqual(seen, [[3, 3, 0, 0], [3, 5, 0, 1]]);
+        });
+    });
 });

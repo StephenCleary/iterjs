@@ -50,4 +50,13 @@ describe('iter.equal', function() {
             assert.deepEqual(result, false);
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter.equal([3, 6], [3, 5], (x, y, xi, yi) => { seen.push([x, y, xi, yi]); return true; });
+            assert.deepEqual(result, true);
+            assert.deepEqual(seen, [[3, 3, 0, 0], [6, 5, 1, 1]]);
+        });
+    });
 });

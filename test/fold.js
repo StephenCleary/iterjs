@@ -57,4 +57,22 @@ describe('fold', function() {
             assert.deepEqual(result, 16);
         });
     });
+
+    describe('callback without seed', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter([3, 5, 7]).fold((x, y, i) => { seen.push([x, y, i]); return x + y; });
+            assert.deepEqual(result, 15);
+            assert.deepEqual(seen, [[3, 5, 1], [8, 7, 2]]);
+        });
+    });
+
+    describe('callback with seed', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter([3, 5, 7]).fold((x, y, i) => { seen.push([x, y, i]); return x + y; }, 2);
+            assert.deepEqual(result, 17);
+            assert.deepEqual(seen, [[2, 3, 0], [5, 5, 1], [10, 7, 2]]);
+        });
+    });
 });

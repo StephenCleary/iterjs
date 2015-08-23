@@ -16,4 +16,17 @@ describe('toObject', function() {
             assert.deepEqual(result, { firstName: 'Bob', lastName: 'Richardson', age: 99 });
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const names = ['firstName', 'lastName', 'age'];
+            const seenValues = [];
+            const seenNames = [];
+            const result = iter.values('Bob', 'Richardson', 99).toObject((x, i) => { seenNames.push([x, i]); return names[i]; },
+                (x, i) => { seenValues.push([x, i]); return x; });
+            assert.deepEqual(result, { firstName: 'Bob', lastName: 'Richardson', age: 99 });
+            assert.deepEqual(seenValues, [['Bob', 0], ['Richardson', 1], [99, 2]]);
+            assert.deepEqual(seenNames, [['Bob', 0], ['Richardson', 1], [99, 2]]);
+        });
+    });
 });

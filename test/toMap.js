@@ -22,4 +22,21 @@ describe('toMap', function() {
             assert.deepEqual(result, [['firstName', 'Bob'], ['lastName', 'Richardson'], ['age', 99]]);
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const names = ['firstName', 'lastName', 'age'];
+            const seenValues = [];
+            const seenNames = [];
+            const map = iter.values('Bob', 'Richardson', 99).toMap((x, i) => { seenNames.push([x, i]); return names[i]; },
+                (x, i) => { seenValues.push([x, i]); return x; });
+            const result = [];
+            for (let [key, value] of map) {
+                result.push([key, value]);
+            }
+            assert.deepEqual(result, [['firstName', 'Bob'], ['lastName', 'Richardson'], ['age', 99]]);
+            assert.deepEqual(seenValues, [['Bob', 0], ['Richardson', 1], [99, 2]]);
+            assert.deepEqual(seenNames, [['Bob', 0], ['Richardson', 1], [99, 2]]);
+        });
+    });
 });

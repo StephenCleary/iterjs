@@ -29,4 +29,13 @@ describe('find', function() {
             assert.deepEqual(result, null);
         });
     });
+
+    describe('callback', function () {
+        it('gets values and indexes', function () {
+            const seen = [];
+            const result = iter.range(5, 8).find((x, i) => { seen.push([x, i]); return false; });
+            assert.deepEqual(result, null);
+            assert.deepEqual(seen, [[5, 0], [6, 1], [7, 2]]);
+        });
+    });
 });

@@ -50,4 +50,13 @@ describe('take', function() {
             assert.deepEqual(it.toArray(), [4, 6]);
         });
     });
+
+    describe('callback', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const it = iter([4, 6, 7, 6]).take((x, i) => { seen.push([x, i]); return x % 2 === 0 });
+            assert.deepEqual(it.toArray(), [4, 6]);
+            assert.deepEqual(seen, [[4, 0], [6, 1], [7, 2]]);
+        });
+    });
 });

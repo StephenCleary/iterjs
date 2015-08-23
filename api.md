@@ -27,6 +27,9 @@
 <dt><a href="#predicate">predicate</a> ⇒ <code>boolean</code></dt>
 <dd><p>A callback used to evaluate a value in an iter and return a true/false designation.</p>
 </dd>
+<dt><a href="#predicateConsecutive">predicateConsecutive</a> ⇒ <code>boolean</code></dt>
+<dd><p>A callback used to evaluate two values in an iter and return a true/false designation.</p>
+</dd>
 <dt><a href="#process">process</a> : <code>function</code></dt>
 <dd><p>A callback used to respond to a value in an iter. Any return value is ignored.</p>
 </dd>
@@ -59,7 +62,7 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.filter(predicate)](#iter+filter) ⇒ <code>[iter_type](#iter_type)</code>
     * [.do(process)](#iter+do) ⇒ <code>[iter_type](#iter_type)</code>
     * [.flatten()](#iter+flatten) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.removeConsecutiveDuplicates([equals])](#iter+removeConsecutiveDuplicates) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.filterConsecutiveDuplicates([equals])](#iter+filterConsecutiveDuplicates) ⇒ <code>[iter_type](#iter_type)</code>
     * [.concat(...others)](#iter+concat) ⇒ <code>[iter_type](#iter_type)</code>
     * [.zip(...others)](#iter+zip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.repeat([count])](#iter+repeat) ⇒ <code>[iter_type](#iter_type)</code>
@@ -189,9 +192,9 @@ Applies a function to each value in an iter as it is iterated, and passes the va
 Takes an iter of iterables, and returns an iter that contains the values from each of those iterables.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
-<a name="iter+removeConsecutiveDuplicates"></a>
-### iter.removeConsecutiveDuplicates([equals]) ⇒ <code>[iter_type](#iter_type)</code>
-Removes runs of consecutive duplicates from the source iter.
+<a name="iter+filterConsecutiveDuplicates"></a>
+### iter.filterConsecutiveDuplicates([equals]) ⇒ <code>[iter_type](#iter_type)</code>
+Filters runs of consecutive duplicates out of the source iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
@@ -676,6 +679,19 @@ A callback used to evaluate a value in an iter and return a true/false designati
 | --- | --- | --- |
 | value | <code>\*</code> | The value from the iter to evaluate. |
 | [index] | <code>\*</code> | The index of the value from the iter. This parameter is always passed, but is not usually needed. |
+
+<a name="predicateConsecutive"></a>
+## predicateConsecutive ⇒ <code>boolean</code>
+A callback used to evaluate two values in an iter and return a true/false designation.
+
+**Kind**: global typedef  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lhsValue | <code>\*</code> | The "left-hand" value to compare. |
+| rhsValue | <code>\*</code> | The "right-hand" value to compare. |
+| [lhsIndex] | <code>\*</code> | The index of the left-hand value in its source iterable. This parameter is always passed, but is not usually needed. |
+| [rhsIndex] | <code>\*</code> | The index of the right-hand value it its source iterable. This parameter is always passed, but is not usually needed. |
 
 <a name="process"></a>
 ## process : <code>function</code>

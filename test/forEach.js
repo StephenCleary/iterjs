@@ -15,4 +15,12 @@ describe('forEach', function() {
             assert.deepEqual(result, [0, 1, 2]);
         });
     });
+
+    describe('callback', function () {
+        it('gets values and indexes', function () {
+            const result = [];
+            iter.range(5, 8).forEach((x, i) => result.push([x, i]));
+            assert.deepEqual(result, [[5, 0], [6, 1], [7, 2]]);
+        });
+    });
 });

@@ -22,4 +22,13 @@ describe('every', function() {
             assert.deepEqual(result, true);
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter([3, 4, 5, 6]).every((x, i) => { seen.push([x, i]); return true; });
+            assert.deepEqual(result, true);
+            assert.deepEqual(seen, [[3, 0], [4, 1], [5, 2], [6, 3]]);
+        });
+    });
 });

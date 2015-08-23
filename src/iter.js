@@ -559,11 +559,11 @@ iter.prototype.flatten = function flatten() {
 };
 
 /**
- * Removes runs of consecutive duplicates from the source iter.
+ * Filters runs of consecutive duplicates out of the source iter.
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
  * @returns {iter_type}
  */
-iter.prototype.removeConsecutiveDuplicates = function removeConsecutiveDuplicates(equals = Object.is) {
+iter.prototype.filterConsecutiveDuplicates = function filterConsecutiveDuplicates(equals = Object.is) {
     const self = this;
     return iter(function *() {
         let lastValue;
@@ -574,10 +574,7 @@ iter.prototype.removeConsecutiveDuplicates = function removeConsecutiveDuplicate
                 lastValueIndex = 0;
                 lastValue = item;
                 yield lastValue;
-            } else {
-                if (equals(lastValue, item, lastValueIndex, index++)) {
-                    continue;
-                }
+            } else if (!equals(lastValue, item, lastValueIndex, index++)) {
                 lastValueIndex = index - 1;
                 lastValue = item;
                 yield lastValue;

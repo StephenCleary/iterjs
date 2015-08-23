@@ -57,4 +57,13 @@ describe('iter.setSymmetricDifference', function() {
             assert.deepEqual(it.toArray(), [2, 9, 11, 15]);
         });
     });
+
+    describe('with callback', function () {
+        it('callback gets values and indexes', function () {
+            const seen = [];
+            const result = iter.setSymmetricDifference([3, 6], [3, 5], (x, y, xi, yi) => { seen.push([x, y, xi, yi]); return 1; });
+            assert.deepEqual(result.toArray(), [3, 5, 3, 6]);
+            assert.deepEqual(seen, [[3, 3, 0, 0], [3, 5, 0, 1]]);
+        });
+    });
 });
