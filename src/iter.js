@@ -791,6 +791,7 @@ iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsV
                 maxValue = item;
             }
         }
+        ++index;
     }
     if (minIndex === -1) {
         return null;
@@ -815,6 +816,7 @@ iter.prototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue <
             minIndex = index;
             minValue = item;
         }
+        ++index;
     }
     if (minIndex === -1) {
         return null;
@@ -839,6 +841,7 @@ iter.prototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue <
             maxIndex = index;
             maxValue = item;
         }
+        ++index;
     }
     if (maxIndex === -1) {
         return null;
