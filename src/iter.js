@@ -762,7 +762,8 @@ iter.prototype.at = function at(index) {
  * @returns {*}
  */
 iter.prototype.fold = function fold(combine, seed) {
-    return this.scan(combine, seed).last().value;
+    var result = this.scan(combine, seed).last();
+    return result === null ? undefined : result.value;
 };
 
 /**
