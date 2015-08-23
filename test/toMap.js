@@ -13,7 +13,7 @@ describe('toMap', function() {
 
     describe('iter with elements', function () {
         it('should return map', function () {
-            const names = ['firstName', 'lastName', 'age']
+            const names = ['firstName', 'lastName', 'age'];
             const map = iter.values('Bob', 'Richardson', 99).toMap((_, i) => names[i]);
             const result = [];
             for (let [key, value] of map) {

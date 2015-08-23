@@ -11,7 +11,7 @@ describe('toObject', function() {
 
     describe('iter with elements', function () {
         it('should return object', function () {
-            const names = ['firstName', 'lastName', 'age']
+            const names = ['firstName', 'lastName', 'age'];
             const result = iter.values('Bob', 'Richardson', 99).toObject((_, i) => names[i]);
             assert.deepEqual(result, { firstName: 'Bob', lastName: 'Richardson', age: 99 });
         });
