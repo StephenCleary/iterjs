@@ -204,7 +204,7 @@ iter.merge = function merge(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsVal
  * @param {iterable} lhs The first iterable to compare.
  * @param {iterable} rhs The second iterable to compare.
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
- * @returns {{lhsValue: *, rhsValue: *, index: number}}
+ * @returns {mismatch_result}
  */
 iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
     const iterL = lhs[Symbol.iterator]();
@@ -761,7 +761,7 @@ iter.prototype.fold = function fold(combine, seed) {
 /**
  * Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
  * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
- * @returns {{min:find_result, max:find_result}}
+ * @returns {minmax_result}
  */
 iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
     let minIndex = -1;
@@ -900,7 +900,7 @@ function *keyValuePairs(it, keySelector, valueSelector = x => x) {
  * Builds an object from the values in this iter.
  * @param {transformString} nameSelector A function used to get the property name from a value in this iter.
  * @param {transform} [valueSelector] A function used to get the property value from a value in this iter. If not specified, the iter values are used as the property values.
- * @returns {{}}
+ * @returns {object}
  */
 iter.prototype.toObject = function toObject(nameSelector, valueSelector = x => x) {
     const result = {};
@@ -952,7 +952,7 @@ iter.prototype.equal = function equal(otherIterable, equals) {
  * Finds the first mismatch between this iter and another iterable. Returns an object containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
  * @param {iterable} otherIterable The other iterable.
  * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
- * @returns {{lhsValue: *, rhsValue: *, index: number}}
+ * @returns {mismatch_result}
  */
 iter.prototype.findMismatch = function findMismatch(otherIterable, equals) {
     return iter.findMismatch(this, otherIterable, equals);
@@ -972,7 +972,27 @@ export default iter;
 
 /**
  * A value returned from an iterable. This is an object containing the actual value along with the value's index in the iterable.
- * @typedef {{value: *, index: number}} find_result
+ * @typedef {{value:*, index:number}} find_result
+ * @type {object}
+ * @property {*} value The actual value from the iterable.
+ * @property {number} index The index of the value within its iterable.
+ */
+
+/**
+ * A mismatch result returned from two iterables. This is an object containing the actual values along with their index.
+ * @typedef {{lhsValue:*, rhsValue:*, index:number}} mismatch_result
+ * @type {object}
+ * @property {*} lhsValue The value from the left-hand iterable.
+ * @property {*} rhsValue The value from the right-hand iterable.
+ * @property {number} index The index of both values in their respective iterables.
+ */
+
+/**
+ * A result containing both a minimum and maximum find result. This is an object containing the actual values along with their indexes.
+ * @typedef {{min:find_result, max:find_result}} minmax_result
+ * @type {object}
+ * @property {find_result} min The minimum value and its index.
+ * @property {find_result} max The maximum value and its index.
  */
 
 /**

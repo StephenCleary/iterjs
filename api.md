@@ -15,6 +15,12 @@
 <dt><a href="#find_result">find_result</a> : <code>Object</code></dt>
 <dd><p>A value returned from an iterable. This is an object containing the actual value along with the value&#39;s index in the iterable.</p>
 </dd>
+<dt><a href="#mismatch_result">mismatch_result</a> : <code>Object</code></dt>
+<dd><p>A mismatch result returned from two iterables. This is an object containing the actual values along with their index.</p>
+</dd>
+<dt><a href="#minmax_result">minmax_result</a> : <code>Object</code></dt>
+<dd><p>A result containing both a minimum and maximum find result. This is an object containing the actual values along with their indexes.</p>
+</dd>
 <dt><a href="#comparer">comparer</a> ⇒ <code>number</code></dt>
 <dd><p>A callback used to compare two values.</p>
 </dd>
@@ -76,18 +82,18 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.find(predicate)](#iter+find) ⇒ <code>[find_result](#find_result)</code>
     * [.at(index)](#iter+at) ⇒ <code>[find_result](#find_result)</code>
     * [.fold(combine, [seed])](#iter+fold) ⇒ <code>\*</code>
-    * [.minmax([comparer])](#iter+minmax) ⇒ <code>Object</code>
+    * [.minmax([comparer])](#iter+minmax) ⇒ <code>[minmax_result](#minmax_result)</code>
     * [.min([comparer])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
     * [.max([comparer])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
     * [.every(predicate)](#iter+every) ⇒ <code>boolean</code>
     * [.some(predicate)](#iter+some) ⇒ <code>boolean</code>
     * [.toArray()](#iter+toArray) ⇒ <code>Array</code>
-    * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>Object</code>
+    * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>object</code>
     * [.toMap(keySelector, [valueSelector])](#iter+toMap) ⇒ <code>Map</code>
     * [.toSet()](#iter+toSet) ⇒ <code>Set</code>
     * [.compare(otherIterable, [comparer])](#iter+compare) ⇒ <code>number</code>
     * [.equal(otherIterable, [equals])](#iter+equal) ⇒ <code>boolean</code>
-    * [.findMismatch(otherIterable, [equals])](#iter+findMismatch) ⇒ <code>Object</code>
+    * [.findMismatch(otherIterable, [equals])](#iter+findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
   * _static_
     * [.values(...items)](#iter.values) ⇒ <code>[iter_type](#iter_type)</code>
     * [.range(start, [end])](#iter.range) ⇒ <code>[iter_type](#iter_type)</code>
@@ -97,7 +103,7 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.compare(lhs, rhs, [comparer])](#iter.compare) ⇒ <code>number</code>
     * [.equal(lhs, rhs, [equals])](#iter.equal) ⇒ <code>boolean</code>
     * [.merge(lhs, rhs, [comparer])](#iter.merge) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.findMismatch(lhs, rhs, [equals])](#iter.findMismatch) ⇒ <code>Object</code>
+    * [.findMismatch(lhs, rhs, [equals])](#iter.findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
     * [.setUnion(lhs, rhs, [comparer])](#iter.setUnion) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setIntersection(lhs, rhs, [comparer])](#iter.setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setSymmetricDifference(lhs, rhs, [comparer])](#iter.setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
@@ -346,7 +352,7 @@ Applies a combiner/accumulator function over this iter, and returns the final va
 | [seed] | <code>\*</code> | The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter. |
 
 <a name="iter+minmax"></a>
-### iter.minmax([comparer]) ⇒ <code>Object</code>
+### iter.minmax([comparer]) ⇒ <code>[minmax_result](#minmax_result)</code>
 Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -401,7 +407,7 @@ Builds an array from the values in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 <a name="iter+toObject"></a>
-### iter.toObject(nameSelector, [valueSelector]) ⇒ <code>Object</code>
+### iter.toObject(nameSelector, [valueSelector]) ⇒ <code>object</code>
 Builds an object from the values in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -451,7 +457,7 @@ Determines whether this iter is equivalent to another iterable (that is, they ar
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
 
 <a name="iter+findMismatch"></a>
-### iter.findMismatch(otherIterable, [equals]) ⇒ <code>Object</code>
+### iter.findMismatch(otherIterable, [equals]) ⇒ <code>[mismatch_result](#mismatch_result)</code>
 Finds the first mismatch between this iter and another iterable. Returns an object containing the value from this iter, the value from the other iter, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
@@ -551,7 +557,7 @@ Merges two sorted iterables into a new sorted iter. The returned iter contains a
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
 <a name="iter.findMismatch"></a>
-### iter.findMismatch(lhs, rhs, [equals]) ⇒ <code>Object</code>
+### iter.findMismatch(lhs, rhs, [equals]) ⇒ <code>[mismatch_result](#mismatch_result)</code>
 Finds the first mismatch between two iterables. Returns an object containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
 
 **Kind**: static method of <code>[iter](#iter)</code>  
@@ -625,6 +631,38 @@ An iterable object that has a prototype providing extended functionality from it
 A value returned from an iterable. This is an object containing the actual value along with the value's index in the iterable.
 
 **Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| value | <code>\*</code> | The actual value from the iterable. |
+| index | <code>number</code> | The index of the value within its iterable. |
+
+<a name="mismatch_result"></a>
+## mismatch_result : <code>Object</code>
+A mismatch result returned from two iterables. This is an object containing the actual values along with their index.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| lhsValue | <code>\*</code> | The value from the left-hand iterable. |
+| rhsValue | <code>\*</code> | The value from the right-hand iterable. |
+| index | <code>number</code> | The index of both values in their respective iterables. |
+
+<a name="minmax_result"></a>
+## minmax_result : <code>Object</code>
+A result containing both a minimum and maximum find result. This is an object containing the actual values along with their indexes.
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| min | <code>[find_result](#find_result)</code> | The minimum value and its index. |
+| max | <code>[find_result](#find_result)</code> | The maximum value and its index. |
+
 <a name="comparer"></a>
 ## comparer ⇒ <code>number</code>
 A callback used to compare two values.
