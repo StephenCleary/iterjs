@@ -27,9 +27,6 @@
 <dt><a href="#predicate">predicate</a> ⇒ <code>boolean</code></dt>
 <dd><p>A callback used to evaluate a value in an iter and return a true/false designation.</p>
 </dd>
-<dt><a href="#predicateConsecutive">predicateConsecutive</a> ⇒ <code>boolean</code></dt>
-<dd><p>A callback used to evaluate two values in an iter and return a true/false designation.</p>
-</dd>
 <dt><a href="#process">process</a> : <code>function</code></dt>
 <dd><p>A callback used to respond to a value in an iter. Any return value is ignored.</p>
 </dd>
@@ -679,19 +676,6 @@ A callback used to evaluate a value in an iter and return a true/false designati
 | --- | --- | --- |
 | value | <code>\*</code> | The value from the iter to evaluate. |
 | [index] | <code>\*</code> | The index of the value from the iter. This parameter is always passed, but is not usually needed. |
-
-<a name="predicateConsecutive"></a>
-## predicateConsecutive ⇒ <code>boolean</code>
-A callback used to evaluate two values in an iter and return a true/false designation.
-
-**Kind**: global typedef  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| lhsValue | <code>\*</code> | The "left-hand" value to compare. |
-| rhsValue | <code>\*</code> | The "right-hand" value to compare. |
-| [lhsIndex] | <code>\*</code> | The index of the left-hand value in its source iterable. This parameter is always passed, but is not usually needed. |
-| [rhsIndex] | <code>\*</code> | The index of the right-hand value it its source iterable. This parameter is always passed, but is not usually needed. |
 
 <a name="process"></a>
 ## process : <code>function</code>
