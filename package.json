@@ -9,12 +9,16 @@
   "description": "An ES6 library for working with iterables and generator functions",
   "devDependencies": {
     "babel": "^5.8.21",
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-jsdoc-to-markdown": "^1.1.1",
+    "gulp-mocha": "^2.1.3",
     "jsdoc-to-markdown": "^1.1.1",
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "mocha --bail --compilers js:babel/register",
-    "docs": "jsdoc2md src/*.js --param-list-format table > api.md"
+    "test": "mocha --bail --compilers js:babel/register"
   },
   "keywords": [
     "iterable",
