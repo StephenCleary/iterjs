@@ -822,23 +822,7 @@ iter.prototype.min = function min(comparer = (lhsValue, rhsValue) => (lhsValue <
  * @returns {find_result}
  */
 iter.prototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
-    let maxIndex = -1;
-    let maxValue;
-    let index = 0;
-    for (let item of this) {
-        if (maxIndex === -1) {
-            maxIndex = index;
-            maxValue = item;
-        } else if (comparer(maxValue, item, maxIndex, index) < 0) {
-            maxIndex = index;
-            maxValue = item;
-        }
-        ++index;
-    }
-    if (maxIndex === -1) {
-        return null;
-    }
-    return { value: maxValue, index: maxIndex };
+    return this.min((lhsValue, rhsValue, lhsIndex, rhsIndex) => -comparer(lhsValue, rhsValue, lhsIndex, rhsIndex));
 };
 
 /**
