@@ -1,6 +1,10 @@
 # iterjs
 An ES6 library for working with iterables and generator functions.
 
+[![GitHub version](https://badge.fury.io/gh/StephenCleary%2Fiterjs.svg)](http://badge.fury.io/gh/StephenCleary%2Fiterjs) [![Build status (lint + tests)](https://ci.appveyor.com/api/projects/status/i7bov5c24s2gp27a?svg=true)](https://ci.appveyor.com/project/StephenCleary/iterjs)
+
+[![Dependency Status](https://david-dm.org/StephenCleary/iterjs.svg)](https://david-dm.org/StephenCleary/iterjs) [![devDependency Status](https://david-dm.org/StephenCleary/iterjs/dev-status.svg)](https://david-dm.org/StephenCleary/iterjs#info=devDependencies)
+
 ## Quickstart
 
 Install from npm:
@@ -13,7 +17,7 @@ or bower:
     
 Then, import the iterjs library:
 
-    import iter from 'iter';
+    import iter from 'iterjs';
 
 (iterjs is an ES6 library, and yes, it works fine with Babel).
 

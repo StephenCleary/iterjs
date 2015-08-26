@@ -7,6 +7,7 @@
   },
   "author": "Stephen Cleary <github.ourteddybear@xoxy.net> (http://stephencleary.com/)",
   "description": "An ES6 library for working with iterables and generator functions",
+  "license": "MIT",
   "devDependencies": {
     "babel": "^5.8.21",
     "gulp": "^3.9.0",
