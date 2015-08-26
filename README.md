@@ -95,7 +95,7 @@ Two of the most useful iter methods are `map` and `filter`.
 `filter` takes each value in an iter and throws out any for which the filter callback returns a falsy value:
 
     // myIter: 2, 4
-    const myIter = iter.range(1, 6).map(x => x % 2 === 0);
+    const myIter = iter.range(1, 6).filter(x => x % 2 === 0);
     
 `take` is another useful operator, especially when dealing with infinite iters. `take` will take only the specified number of values from an iter:
 
