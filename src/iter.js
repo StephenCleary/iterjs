@@ -161,6 +161,37 @@ iter.equal = function equal(lhs, rhs, equals = Object.is) {
 };
 
 /**
+ * Finds the first mismatch between two iterables. Returns an object containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
+ * @param {iterable} lhs The first iterable to compare.
+ * @param {iterable} rhs The second iterable to compare.
+ * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
+ * @returns {mismatch_result}
+ */
+iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
+    const iterL = lhs[Symbol.iterator]();
+    const iterR = rhs[Symbol.iterator]();
+    let index = 0;
+    while (true) {
+        const nextL = iterL.next();
+        const nextR = iterR.next();
+        if (nextL.done && nextR.done) {
+            return null;
+        }
+        if (nextL.done) {
+            return { lhsValue: undefined, rhsValue: nextR.value, index };
+        }
+        if (nextR.done) {
+            return { lhsValue: nextL.value, rhsValue: undefined, index };
+        }
+        const result = equals(nextL.value, nextR.value, index, index);
+        if (!result) {
+            return { lhsValue: nextL.value, rhsValue: nextR.value, index };
+        }
+        ++index;
+    }
+};
+
+/**
  * Merges two sorted iterables into a new sorted iter. The returned iter contains all values from both source iterables, and may contain duplicates.
  * @param {iterable} lhs The first iterable to merge.
  * @param {iterable} rhs The second iterable to merge.
@@ -197,37 +228,6 @@ iter.merge = function merge(lhs, rhs, comparer = (lhsValue, rhsValue) => (lhsVal
             }
         }
     });
-};
-
-/**
- * Finds the first mismatch between two iterables. Returns an object containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
- * @param {iterable} lhs The first iterable to compare.
- * @param {iterable} rhs The second iterable to compare.
- * @param {equals} [equals] A callback used to determine item equality. If not specified, this function uses "Object.is".
- * @returns {mismatch_result}
- */
-iter.findMismatch = function findMismatch(lhs, rhs, equals = Object.is) {
-    const iterL = lhs[Symbol.iterator]();
-    const iterR = rhs[Symbol.iterator]();
-    let index = 0;
-    while (true) {
-        const nextL = iterL.next();
-        const nextR = iterR.next();
-        if (nextL.done && nextR.done) {
-            return null;
-        }
-        if (nextL.done) {
-            return { lhsValue: undefined, rhsValue: nextR.value, index };
-        }
-        if (nextR.done) {
-            return { lhsValue: nextL.value, rhsValue: undefined, index };
-        }
-        const result = equals(nextL.value, nextR.value, index, index);
-        if (!result) {
-            return { lhsValue: nextL.value, rhsValue: nextR.value, index };
-        }
-        ++index;
-    }
 };
 
 /* Set operations */
@@ -395,68 +395,32 @@ iter.setDifference = function setDifference(lhs, rhs, comparer = (lhsValue, rhsV
 /* Enjoy the world of iter */
 
 /**
- * Applies a combiner/accumulator function over an iter. Returns an iter containing the values of the combination.
- * @param {combine} combine The callback used to combine values.
- * @param {*} [seed] The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter.
+ * Applies a transformation function to each value in an iter. The returned iter contains the transformed values.
+ * @param {transform} transform The transformation function to apply.
  * @returns {iter_type}
  */
-iter.prototype.scan = function scan(combine, seed) {
+iter.prototype.map = function map(transform) {
     const self = this;
     return iter(function *() {
         let index = 0;
-        let current = seed;
         for (let item of self) {
-            if (index === 0 && seed === undefined) {
-                current = item;
-            } else {
-                current = combine(current, item, index);
-                yield current;
-            }
-            ++index;
+            yield transform(item, index++);
         }
     });
 };
 
 /**
- * Breaks an iter into buffers. The values of the returned iter are all arrays of the specified size, except for the last value which may be a smaller array containing the last few values.
- * @param {number} size The buffer size. This must be an integer greater than 0.
+ * Filters an iter based on a predicate function. The returned iter contains only values for which the predicate function returns true.
+ * @param {predicate} predicate The predicate function used to determine whether each value is in the returned iter.
  * @returns {iter_type}
  */
-iter.prototype.buffer = function buffer(size) {
+iter.prototype.filter = function filter(predicate) {
     const self = this;
     return iter(function *() {
-        let result = [];
+        let index = 0;
         for (let item of self) {
-            result.push(item);
-            if (result.length === size) {
-                yield result;
-                result = [];
-            }
-        }
-        if (result.length !== 0) {
-            yield result;
-        }
-    });
-};
-
-/**
- * Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are shallow-copied before they are yielded, so they can be safely mutated by consuming code.
- * @param {number} size The size of the window. This must be an integer greater than 0.
- * @returns {iter_type}
- */
-iter.prototype.window = function window(size) {
-    const self = this;
-    return iter(function *() {
-        const result = [];
-        for (let item of self) {
-            if (result.length === size) {
-                result.shift();
-                result.push(item);
-            } else {
-                result.push(item);
-            }
-            if (result.length === size) {
-                yield result.slice();
+            if (predicate(item, index++)) {
+                yield item;
             }
         }
     });
@@ -505,44 +469,57 @@ iter.prototype.skip = function skip(numberOrPredicate) {
 };
 
 /**
- * Applies a transformation function to each value in an iter. The returned iter contains the transformed values.
- * @param {transform} transform The transformation function to apply.
- * @returns {iter_type}
- */
-iter.prototype.map = function map(transform) {
-    const self = this;
-    return iter(function *() {
-        let index = 0;
-        for (let item of self) {
-            yield transform(item, index++);
-        }
-    });
-};
-
-/**
- * Filters an iter based on a predicate function. The returned iter contains only values for which the predicate function returns true.
- * @param {predicate} predicate The predicate function used to determine whether each value is in the returned iter.
- * @returns {iter_type}
- */
-iter.prototype.filter = function filter(predicate) {
-    const self = this;
-    return iter(function *() {
-        let index = 0;
-        for (let item of self) {
-            if (predicate(item, index++)) {
-                yield item;
-            }
-        }
-    });
-};
-
-/**
  * Applies a function to each value in an iter as it is iterated, and passes the value through in the returned iter.
  * @param {process} process The function to call for each value as it is iterated.
  * @returns {iter_type}
  */
 iter.prototype.do = function _do(process) {
     return this.map((item, index) => { process(item, index); return item; });
+};
+
+/**
+ * Breaks an iter into buffers. The values of the returned iter are all arrays of the specified size, except for the last value which may be a smaller array containing the last few values.
+ * @param {number} size The buffer size. This must be an integer greater than 0.
+ * @returns {iter_type}
+ */
+iter.prototype.buffer = function buffer(size) {
+    const self = this;
+    return iter(function *() {
+        let result = [];
+        for (let item of self) {
+            result.push(item);
+            if (result.length === size) {
+                yield result;
+                result = [];
+            }
+        }
+        if (result.length !== 0) {
+            yield result;
+        }
+    });
+};
+
+/**
+ * Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are shallow-copied before they are yielded, so they can be safely mutated by consuming code.
+ * @param {number} size The size of the window. This must be an integer greater than 0.
+ * @returns {iter_type}
+ */
+iter.prototype.window = function window(size) {
+    const self = this;
+    return iter(function *() {
+        const result = [];
+        for (let item of self) {
+            if (result.length === size) {
+                result.shift();
+                result.push(item);
+            } else {
+                result.push(item);
+            }
+            if (result.length === size) {
+                yield result.slice();
+            }
+        }
+    });
 };
 
 /**
@@ -584,6 +561,29 @@ iter.prototype.filterConsecutiveDuplicates = function filterConsecutiveDuplicate
 };
 
 /**
+ * Applies a combiner/accumulator function over an iter. Returns an iter containing the values of the combination.
+ * @param {combine} combine The callback used to combine values.
+ * @param {*} [seed] The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter.
+ * @returns {iter_type}
+ */
+iter.prototype.scan = function scan(combine, seed) {
+    const self = this;
+    return iter(function *() {
+        let index = 0;
+        let current = seed;
+        for (let item of self) {
+            if (index === 0 && seed === undefined) {
+                current = item;
+            } else {
+                current = combine(current, item, index);
+                yield current;
+            }
+            ++index;
+        }
+    });
+};
+
+/**
  * Concatenates this iter with any number of iterables.
  * @param {...iterable} others The additional iterables to concatenate. If no iterables are passed to this function, then the returned iter is equivalent to the source iter.
  * @returns {iter_type}
@@ -593,21 +593,21 @@ iter.prototype.concat = function concat(...others) {
 };
 
 /**
- * Combines the values in this iter with corresponding values from any number of iterables.
- * @param {...iterable} others The othre iterables to zip. If no iterables are passed to this function, then the returned iter is equivalent to the source iter.
- * @returns {iter_type}
- */
-iter.prototype.zip = function zip(...others) {
-    return iter.zip(this, ...others);
-};
-
-/**
  * Repeats the values in this iter the specified number of times. Note that this iter is evaluated multiple times.
  * @param {number} [count] The number of times the value is repeated. If not specified, the returned iter repeats indefinitely. If the count is 0, the returned iter is empty.
  * @returns {iter_type}
  */
 iter.prototype.repeat = function repeat(count) {
     return iter.repeat(this, count).flatten();
+};
+
+/**
+ * Combines the values in this iter with corresponding values from any number of iterables.
+ * @param {...iterable} others The other iterables to zip. If no iterables are passed to this function, then the returned iter is equivalent to the source iter.
+ * @returns {iter_type}
+ */
+iter.prototype.zip = function zip(...others) {
+    return iter.zip(this, ...others);
 };
 
 /**
@@ -724,6 +724,15 @@ iter.prototype.last = function last() {
 };
 
 /**
+ * Returns a specified value from this iter. If this iter is empty, this function returns null.
+ * @param {number} index The index of the value to return.
+ * @returns {find_result}
+ */
+iter.prototype.at = function at(index) {
+    return this.find((_, i) => i === index);
+};
+
+/**
  * Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns null.
  * @param {predicate} predicate The function used to determine whether this is the value we're searching for.
  * @returns {find_result}
@@ -739,56 +748,31 @@ iter.prototype.find = function find(predicate) {
 };
 
 /**
- * Returns a specified value from this iter. If this iter is empty, this function returns null.
- * @param {number} index The index of the value to return.
- * @returns {find_result}
+ * Determines whether the specified predicate returns true for every value in this iter.
+ * @param {predicate} predicate The predicate to evaluate for each value in this iter.
+ * @returns {boolean}
  */
-iter.prototype.at = function at(index) {
-    return this.find((_, i) => i === index);
-};
-
-/**
- * Applies a combiner/accumulator function over this iter, and returns the final value of the combination.
- * @param {combine} combine The callback used to combine values.
- * @param {*} [seed] The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter.
- * @returns {*}
- */
-iter.prototype.fold = function fold(combine, seed) {
-    var result = this.scan(combine, seed).last();
-    return result === null ? undefined : result.value;
-};
-
-/**
- * Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
- * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
- * @returns {minmax_result}
- */
-iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
-    let minIndex = -1;
-    let maxIndex = -1;
-    let minValue;
-    let maxValue;
-    let index = 0;
-    for (let item of this) {
-        if (minIndex === -1) {
-            minIndex = maxIndex = index;
-            minValue = maxValue = item;
-        } else {
-            if (comparer(minValue, item, minIndex, index) > 0) {
-                minIndex = index;
-                minValue = item;
-            }
-            if (comparer(maxValue, item, maxIndex, index) < 0) {
-                maxIndex = index;
-                maxValue = item;
-            }
+iter.prototype.every = function every(predicate) {
+    for (let item of this.map(predicate)) {
+        if (!item) {
+            return false;
         }
-        ++index;
     }
-    if (minIndex === -1) {
-        return null;
+    return true;
+};
+
+/**
+ * Determines whether the specified predicate returns true for any value in this iter.
+ * @param {predicate} predicate The predicate to evaluate for each value in this iter.
+ * @returns {boolean}
+ */
+iter.prototype.some = function some(predicate) {
+    for (let item of this.map(predicate)) {
+        if (item) {
+            return true;
+        }
     }
-    return { min: { value: minValue, index: minIndex }, max: { value: maxValue, index: maxIndex } };
+    return false;
 };
 
 /**
@@ -826,31 +810,47 @@ iter.prototype.max = function max(comparer = (lhsValue, rhsValue) => (lhsValue <
 };
 
 /**
- * Determines whether the specified predicate returns true for every value in this iter.
- * @param {predicate} predicate The predicate to evaluate for each value in this iter.
- * @returns {boolean}
+ * Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
+ * @param {comparer} [comparer] A callback used to compare items. If not specified, this function uses the < and > operators to compare items.
+ * @returns {minmax_result}
  */
-iter.prototype.every = function every(predicate) {
-    for (let item of this.map(predicate)) {
-        if (!item) {
-            return false;
+iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsValue < rhsValue) ? -1 : Number(lhsValue > rhsValue)) {
+    let minIndex = -1;
+    let maxIndex = -1;
+    let minValue;
+    let maxValue;
+    let index = 0;
+    for (let item of this) {
+        if (minIndex === -1) {
+            minIndex = maxIndex = index;
+            minValue = maxValue = item;
+        } else {
+            if (comparer(minValue, item, minIndex, index) > 0) {
+                minIndex = index;
+                minValue = item;
+            }
+            if (comparer(maxValue, item, maxIndex, index) < 0) {
+                maxIndex = index;
+                maxValue = item;
+            }
         }
+        ++index;
     }
-    return true;
+    if (minIndex === -1) {
+        return null;
+    }
+    return { min: { value: minValue, index: minIndex }, max: { value: maxValue, index: maxIndex } };
 };
 
 /**
- * Determines whether the specified predicate returns true for any value in this iter.
- * @param {predicate} predicate The predicate to evaluate for each value in this iter.
- * @returns {boolean}
+ * Applies a combiner/accumulator function over this iter, and returns the final value of the combination.
+ * @param {combine} combine The callback used to combine values.
+ * @param {*} [seed] The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter.
+ * @returns {*}
  */
-iter.prototype.some = function some(predicate) {
-    for (let item of this.map(predicate)) {
-        if (item) {
-            return true;
-        }
-    }
-    return false;
+iter.prototype.fold = function fold(combine, seed) {
+    var result = this.scan(combine, seed).last();
+    return result === null ? undefined : result.value;
 };
 
 /**

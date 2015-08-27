@@ -56,19 +56,19 @@ Creates an iter from an iterable object or generator function. If no argument is
 
 * [iter([fnOrObject])](#iter) ⇒ <code>[iter_type](#iter_type)</code>
   * _instance_
-    * [.scan(combine, [seed])](#iter+scan) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.buffer(size)](#iter+buffer) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.window(size)](#iter+window) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.take(numberOrPredicate)](#iter+take) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.skip(numberOrPredicate)](#iter+skip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.map(transform)](#iter+map) ⇒ <code>[iter_type](#iter_type)</code>
     * [.filter(predicate)](#iter+filter) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.take(numberOrPredicate)](#iter+take) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.skip(numberOrPredicate)](#iter+skip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.do(process)](#iter+do) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.buffer(size)](#iter+buffer) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.window(size)](#iter+window) ⇒ <code>[iter_type](#iter_type)</code>
     * [.flatten()](#iter+flatten) ⇒ <code>[iter_type](#iter_type)</code>
     * [.filterConsecutiveDuplicates([equals])](#iter+filterConsecutiveDuplicates) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.scan(combine, [seed])](#iter+scan) ⇒ <code>[iter_type](#iter_type)</code>
     * [.concat(...others)](#iter+concat) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.zip(...others)](#iter+zip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.repeat([count])](#iter+repeat) ⇒ <code>[iter_type](#iter_type)</code>
+    * [.zip(...others)](#iter+zip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.merge(otherIterable, [comparer])](#iter+merge) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setUnion(otherIterable, [comparer])](#iter+setUnion) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setIntersection(otherIterable, [comparer])](#iter+setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
@@ -79,14 +79,14 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.isEmpty()](#iter+isEmpty) ⇒ <code>boolean</code>
     * [.first()](#iter+first) ⇒ <code>[find_result](#find_result)</code>
     * [.last()](#iter+last) ⇒ <code>[find_result](#find_result)</code>
-    * [.find(predicate)](#iter+find) ⇒ <code>[find_result](#find_result)</code>
     * [.at(index)](#iter+at) ⇒ <code>[find_result](#find_result)</code>
-    * [.fold(combine, [seed])](#iter+fold) ⇒ <code>\*</code>
-    * [.minmax([comparer])](#iter+minmax) ⇒ <code>[minmax_result](#minmax_result)</code>
-    * [.min([comparer])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
-    * [.max([comparer])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
+    * [.find(predicate)](#iter+find) ⇒ <code>[find_result](#find_result)</code>
     * [.every(predicate)](#iter+every) ⇒ <code>boolean</code>
     * [.some(predicate)](#iter+some) ⇒ <code>boolean</code>
+    * [.min([comparer])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
+    * [.max([comparer])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
+    * [.minmax([comparer])](#iter+minmax) ⇒ <code>[minmax_result](#minmax_result)</code>
+    * [.fold(combine, [seed])](#iter+fold) ⇒ <code>\*</code>
     * [.toArray()](#iter+toArray) ⇒ <code>Array</code>
     * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>object</code>
     * [.toMap(keySelector, [valueSelector])](#iter+toMap) ⇒ <code>Map</code>
@@ -102,63 +102,12 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.zip(...iterables)](#iter.zip) ⇒ <code>[iter_type](#iter_type)</code>
     * [.compare(lhs, rhs, [comparer])](#iter.compare) ⇒ <code>number</code>
     * [.equal(lhs, rhs, [equals])](#iter.equal) ⇒ <code>boolean</code>
-    * [.merge(lhs, rhs, [comparer])](#iter.merge) ⇒ <code>[iter_type](#iter_type)</code>
     * [.findMismatch(lhs, rhs, [equals])](#iter.findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
+    * [.merge(lhs, rhs, [comparer])](#iter.merge) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setUnion(lhs, rhs, [comparer])](#iter.setUnion) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setIntersection(lhs, rhs, [comparer])](#iter.setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setSymmetricDifference(lhs, rhs, [comparer])](#iter.setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setDifference(lhs, rhs, [comparer])](#iter.setDifference) ⇒ <code>[iter_type](#iter_type)</code>
-
-<a name="iter+scan"></a>
-### iter.scan(combine, [seed]) ⇒ <code>[iter_type](#iter_type)</code>
-Applies a combiner/accumulator function over an iter. Returns an iter containing the values of the combination.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| combine | <code>[combine](#combine)</code> | The callback used to combine values. |
-| [seed] | <code>\*</code> | The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter. |
-
-<a name="iter+buffer"></a>
-### iter.buffer(size) ⇒ <code>[iter_type](#iter_type)</code>
-Breaks an iter into buffers. The values of the returned iter are all arrays of the specified size, except for the last value which may be a smaller array containing the last few values.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| size | <code>number</code> | The buffer size. This must be an integer greater than 0. |
-
-<a name="iter+window"></a>
-### iter.window(size) ⇒ <code>[iter_type](#iter_type)</code>
-Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are shallow-copied before they are yielded, so they can be safely mutated by consuming code.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| size | <code>number</code> | The size of the window. This must be an integer greater than 0. |
-
-<a name="iter+take"></a>
-### iter.take(numberOrPredicate) ⇒ <code>[iter_type](#iter_type)</code>
-Takes a number of values from this iter, and discards all later values.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| numberOrPredicate | <code>number</code> &#124; <code>[predicate](#predicate)</code> | If a number, then this is the number of values to take from the iter. If a predicate, then values are taken from the iter as long as the predicate returns true. As soon as it returns false, the returned iter ends. |
-
-<a name="iter+skip"></a>
-### iter.skip(numberOrPredicate) ⇒ <code>[iter_type](#iter_type)</code>
-Skips over a number of values from this iter, and then yields all later values.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| numberOrPredicate | <code>number</code> &#124; <code>[predicate](#predicate)</code> | If a number, then this is the number of values to skip over from the iter. If a predicate, then values are skipped over from the iter as long as the predicate returns true. As soon as it returns false, the returned iter yields all later values. |
 
 <a name="iter+map"></a>
 ### iter.map(transform) ⇒ <code>[iter_type](#iter_type)</code>
@@ -180,6 +129,26 @@ Filters an iter based on a predicate function. The returned iter contains only v
 | --- | --- | --- |
 | predicate | <code>[predicate](#predicate)</code> | The predicate function used to determine whether each value is in the returned iter. |
 
+<a name="iter+take"></a>
+### iter.take(numberOrPredicate) ⇒ <code>[iter_type](#iter_type)</code>
+Takes a number of values from this iter, and discards all later values.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| numberOrPredicate | <code>number</code> &#124; <code>[predicate](#predicate)</code> | If a number, then this is the number of values to take from the iter. If a predicate, then values are taken from the iter as long as the predicate returns true. As soon as it returns false, the returned iter ends. |
+
+<a name="iter+skip"></a>
+### iter.skip(numberOrPredicate) ⇒ <code>[iter_type](#iter_type)</code>
+Skips over a number of values from this iter, and then yields all later values.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| numberOrPredicate | <code>number</code> &#124; <code>[predicate](#predicate)</code> | If a number, then this is the number of values to skip over from the iter. If a predicate, then values are skipped over from the iter as long as the predicate returns true. As soon as it returns false, the returned iter yields all later values. |
+
 <a name="iter+do"></a>
 ### iter.do(process) ⇒ <code>[iter_type](#iter_type)</code>
 Applies a function to each value in an iter as it is iterated, and passes the value through in the returned iter.
@@ -189,6 +158,26 @@ Applies a function to each value in an iter as it is iterated, and passes the va
 | Param | Type | Description |
 | --- | --- | --- |
 | process | <code>[process](#process)</code> | The function to call for each value as it is iterated. |
+
+<a name="iter+buffer"></a>
+### iter.buffer(size) ⇒ <code>[iter_type](#iter_type)</code>
+Breaks an iter into buffers. The values of the returned iter are all arrays of the specified size, except for the last value which may be a smaller array containing the last few values.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| size | <code>number</code> | The buffer size. This must be an integer greater than 0. |
+
+<a name="iter+window"></a>
+### iter.window(size) ⇒ <code>[iter_type](#iter_type)</code>
+Applies a sliding window over the iter. The values of the returned iter are all arrays of the specified size. The arrays are shallow-copied before they are yielded, so they can be safely mutated by consuming code.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| size | <code>number</code> | The size of the window. This must be an integer greater than 0. |
 
 <a name="iter+flatten"></a>
 ### iter.flatten() ⇒ <code>[iter_type](#iter_type)</code>
@@ -205,6 +194,17 @@ Filters runs of consecutive duplicates out of the source iter.
 | --- | --- | --- |
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
 
+<a name="iter+scan"></a>
+### iter.scan(combine, [seed]) ⇒ <code>[iter_type](#iter_type)</code>
+Applies a combiner/accumulator function over an iter. Returns an iter containing the values of the combination.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| combine | <code>[combine](#combine)</code> | The callback used to combine values. |
+| [seed] | <code>\*</code> | The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter. |
+
 <a name="iter+concat"></a>
 ### iter.concat(...others) ⇒ <code>[iter_type](#iter_type)</code>
 Concatenates this iter with any number of iterables.
@@ -215,16 +215,6 @@ Concatenates this iter with any number of iterables.
 | --- | --- | --- |
 | ...others | <code>[iterable](#iterable)</code> | The additional iterables to concatenate. If no iterables are passed to this function, then the returned iter is equivalent to the source iter. |
 
-<a name="iter+zip"></a>
-### iter.zip(...others) ⇒ <code>[iter_type](#iter_type)</code>
-Combines the values in this iter with corresponding values from any number of iterables.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| ...others | <code>[iterable](#iterable)</code> | The othre iterables to zip. If no iterables are passed to this function, then the returned iter is equivalent to the source iter. |
-
 <a name="iter+repeat"></a>
 ### iter.repeat([count]) ⇒ <code>[iter_type](#iter_type)</code>
 Repeats the values in this iter the specified number of times. Note that this iter is evaluated multiple times.
@@ -234,6 +224,16 @@ Repeats the values in this iter the specified number of times. Note that this it
 | Param | Type | Description |
 | --- | --- | --- |
 | [count] | <code>number</code> | The number of times the value is repeated. If not specified, the returned iter repeats indefinitely. If the count is 0, the returned iter is empty. |
+
+<a name="iter+zip"></a>
+### iter.zip(...others) ⇒ <code>[iter_type](#iter_type)</code>
+Combines the values in this iter with corresponding values from any number of iterables.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ...others | <code>[iterable](#iterable)</code> | The other iterables to zip. If no iterables are passed to this function, then the returned iter is equivalent to the source iter. |
 
 <a name="iter+merge"></a>
 ### iter.merge(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
@@ -320,16 +320,6 @@ Returns the first value in this iter, along with its index. If this iter is empt
 Returns the last value in this iter, along with its index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
-<a name="iter+find"></a>
-### iter.find(predicate) ⇒ <code>[find_result](#find_result)</code>
-Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns null.
-
-**Kind**: instance method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| predicate | <code>[predicate](#predicate)</code> | The function used to determine whether this is the value we're searching for. |
-
 <a name="iter+at"></a>
 ### iter.at(index) ⇒ <code>[find_result](#find_result)</code>
 Returns a specified value from this iter. If this iter is empty, this function returns null.
@@ -340,26 +330,35 @@ Returns a specified value from this iter. If this iter is empty, this function r
 | --- | --- | --- |
 | index | <code>number</code> | The index of the value to return. |
 
-<a name="iter+fold"></a>
-### iter.fold(combine, [seed]) ⇒ <code>\*</code>
-Applies a combiner/accumulator function over this iter, and returns the final value of the combination.
+<a name="iter+find"></a>
+### iter.find(predicate) ⇒ <code>[find_result](#find_result)</code>
+Returns the first value in this iter that satisfies a predicate, along with its index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| combine | <code>[combine](#combine)</code> | The callback used to combine values. |
-| [seed] | <code>\*</code> | The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter. |
+| predicate | <code>[predicate](#predicate)</code> | The function used to determine whether this is the value we're searching for. |
 
-<a name="iter+minmax"></a>
-### iter.minmax([comparer]) ⇒ <code>[minmax_result](#minmax_result)</code>
-Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
+<a name="iter+every"></a>
+### iter.every(predicate) ⇒ <code>boolean</code>
+Determines whether the specified predicate returns true for every value in this iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
+| predicate | <code>[predicate](#predicate)</code> | The predicate to evaluate for each value in this iter. |
+
+<a name="iter+some"></a>
+### iter.some(predicate) ⇒ <code>boolean</code>
+Determines whether the specified predicate returns true for any value in this iter.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| predicate | <code>[predicate](#predicate)</code> | The predicate to evaluate for each value in this iter. |
 
 <a name="iter+min"></a>
 ### iter.min([comparer]) ⇒ <code>[find_result](#find_result)</code>
@@ -381,25 +380,26 @@ Determines the maximum value in this iter. Returns the maximum value and its ind
 | --- | --- | --- |
 | [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+every"></a>
-### iter.every(predicate) ⇒ <code>boolean</code>
-Determines whether the specified predicate returns true for every value in this iter.
+<a name="iter+minmax"></a>
+### iter.minmax([comparer]) ⇒ <code>[minmax_result](#minmax_result)</code>
+Determines the minimum and maximum values in this iter. Returns the minimum value and index, and the maximum value and index. If this iter is empty, this function returns null.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| predicate | <code>[predicate](#predicate)</code> | The predicate to evaluate for each value in this iter. |
+| [comparer] | <code>[comparer](#comparer)</code> | A callback used to compare items. If not specified, this function uses the < and > operators to compare items. |
 
-<a name="iter+some"></a>
-### iter.some(predicate) ⇒ <code>boolean</code>
-Determines whether the specified predicate returns true for any value in this iter.
+<a name="iter+fold"></a>
+### iter.fold(combine, [seed]) ⇒ <code>\*</code>
+Applies a combiner/accumulator function over this iter, and returns the final value of the combination.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| predicate | <code>[predicate](#predicate)</code> | The predicate to evaluate for each value in this iter. |
+| combine | <code>[combine](#combine)</code> | The callback used to combine values. |
+| [seed] | <code>\*</code> | The initial value of the combination. If not specified, then the initial value of the combination is the first value of the iter. |
 
 <a name="iter+toArray"></a>
 ### iter.toArray() ⇒ <code>Array</code>
@@ -544,18 +544,6 @@ Determines whether two iterables are equivalent (are the same length and contain
 | rhs | <code>[iterable](#iterable)</code> | The second iterable to compare. |
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
 
-<a name="iter.merge"></a>
-### iter.merge(lhs, rhs, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
-Merges two sorted iterables into a new sorted iter. The returned iter contains all values from both source iterables, and may contain duplicates.
-
-**Kind**: static method of <code>[iter](#iter)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| lhs | <code>[iterable](#iterable)</code> | The first iterable to merge. |
-| rhs | <code>[iterable](#iterable)</code> | The second iterable to merge. |
-| [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
-
 <a name="iter.findMismatch"></a>
 ### iter.findMismatch(lhs, rhs, [equals]) ⇒ <code>[mismatch_result](#mismatch_result)</code>
 Finds the first mismatch between two iterables. Returns an object containing the lhs value, the rhs value, and the index of the values. If one iterable ends before the other, that iterable's value returned as "undefined". If no mismatch is found, then this function returns null.
@@ -567,6 +555,18 @@ Finds the first mismatch between two iterables. Returns an object containing the
 | lhs | <code>[iterable](#iterable)</code> | The first iterable to compare. |
 | rhs | <code>[iterable](#iterable)</code> | The second iterable to compare. |
 | [equals] | <code>[equals](#equals)</code> | A callback used to determine item equality. If not specified, this function uses "Object.is". |
+
+<a name="iter.merge"></a>
+### iter.merge(lhs, rhs, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
+Merges two sorted iterables into a new sorted iter. The returned iter contains all values from both source iterables, and may contain duplicates.
+
+**Kind**: static method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lhs | <code>[iterable](#iterable)</code> | The first iterable to merge. |
+| rhs | <code>[iterable](#iterable)</code> | The second iterable to merge. |
+| [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
 <a name="iter.setUnion"></a>
 ### iter.setUnion(lhs, rhs, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
