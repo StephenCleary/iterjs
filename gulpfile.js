@@ -12,7 +12,7 @@ gulp.task('lint', function () {
         .pipe(eslint.failOnError());
 });
 
-gulp.task('test', function (done) {
+gulp.task('test', function () {
     return gulp.src(['test/**/*.js'], { read: false })
         .pipe(mocha({ bail: true }));
 });
