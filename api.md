@@ -75,7 +75,7 @@ Creates an iter from an iterable object or generator function. If no argument is
     * [.setSymmetricDifference(otherIterable, [comparer])](#iter+setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
     * [.setDifference(otherIterable, [comparer])](#iter+setDifference) ⇒ <code>[iter_type](#iter_type)</code>
     * [.forEach([process])](#iter+forEach)
-    * [.length()](#iter+length) ⇒ <code>number</code>
+    * [.count()](#iter+count) ⇒ <code>number</code>
     * [.isEmpty()](#iter+isEmpty) ⇒ <code>boolean</code>
     * [.first()](#iter+first) ⇒ <code>[find_result](#find_result)</code>
     * [.last()](#iter+last) ⇒ <code>[find_result](#find_result)</code>
@@ -300,9 +300,9 @@ Iterates through the values of this iter, invoking a processing function for eac
 | --- | --- | --- |
 | [process] | <code>[process](#process)</code> | The function to call for each value. If not specified, this function will still iterate through the values of this iter, causing any side effects. |
 
-<a name="iter+length"></a>
-### iter.length() ⇒ <code>number</code>
-Determines the length of this iter; the length of an iter is the number of values it contains. This function will iterate through the entire iter.
+<a name="iter+count"></a>
+### iter.count() ⇒ <code>number</code>
+Determines the number of values in this iter. This function will iterate through the entire iter.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
 <a name="iter+isEmpty"></a>

@@ -1,17 +1,17 @@
 import assert from 'assert';
 import iter from '../src/iter';
 
-describe('length', function() {
+describe('count', function() {
     describe('empty', function () {
         it('returns 0', function () {
-            const result = iter().length();
+            const result = iter().count();
             assert.equal(result, 0);
         });
     });
 
     describe('values in iter', function () {
         it('returns number of values', function () {
-            const result = iter.range(0, 3).length();
+            const result = iter.range(0, 3).count();
             assert.equal(result, 3);
         });
     });

@@ -674,10 +674,10 @@ iter.prototype.forEach = function forEach(process = () => {}) {
 };
 
 /**
- * Determines the length of this iter; the length of an iter is the number of values it contains. This function will iterate through the entire iter.
+ * Determines the number of values in this iter. This function will iterate through the entire iter.
  * @returns {number}
  */
-iter.prototype.length = function length() {
+iter.prototype.count = function count() {
     let result = 0;
     for (let item of this) {
         ++result;

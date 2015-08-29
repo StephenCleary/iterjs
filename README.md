@@ -50,7 +50,7 @@ You can also create an iter from a generator method, like this:
        }
     });
      
-Iters can be infinite in length without any problems. This generator method never completes:
+Iters can be infinite without any problems. This generator method never completes:
 
     // myIter: 13, 13, 13, 13, 13, 13, ...
     const myIter = iter(function *() {
@@ -167,10 +167,10 @@ Another common situation is to search for a value that matches some condition:
     // foundValue: { value: 4, index: 3 }
     const foundValue = myIter.find(x => x >= 4);
     
-Sometimes, you just need some metadata; there's a couple convenience methods for determining the length of an iter, or testing if there's any values at all.:
+Sometimes, you just need some metadata; there's a couple convenience methods for determining the number of values in an iter, or testing if there's any values at all:
 
-    // iterLength: 5
-    const iterLength = iter.range(1, 6).length();
+    // iterCount: 5
+    const iterCount = iter.range(1, 6).count();
     
     // iterIsEmpty: false
     const iterIsEmpty = iter.range(1).isEmpty();
