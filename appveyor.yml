@@ -1,4 +1,4 @@
-version: 0.2.1.{build}
+version: 0.3.0.{build}
 install:
 - ps: Install-Product node 0
 - npm install gulp --global --no-optional --silent
