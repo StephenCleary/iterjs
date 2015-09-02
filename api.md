@@ -360,6 +360,10 @@ Performs a set intersection of this iter with another iterable. Both source iter
 | otherIterable | <code>[iterable](#iterable)</code> | The other iterable. |
 | [comparer] | <code>[comparer](#comparer)</code> | The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items. |
 
+**Example**  
+```js
+const it = iter([1, 3]).setIntersection([2, 3]);// 'it' contains: 3
+```
 <a name="iter+setSymmetricDifference"></a>
 ### iter.setSymmetricDifference(otherIterable, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>
 Performs a set symmetric difference of this iter with another iterable. Both source iterables must be sorted with no duplicate values.
@@ -882,7 +886,7 @@ Performs a set intersection of two iterables. Both source iterables must be sort
 
 **Example**  
 ```js
-const it = iter([1, 3]).setIntersection([2, 3]);// 'it' contains: 3
+const it = iter.setIntersection([1, 3], [2, 3]);// 'it' contains: 3
 ```
 <a name="iter.setSymmetricDifference"></a>
 ### iter.setSymmetricDifference(lhs, rhs, [comparer]) ⇒ <code>[iter_type](#iter_type)</code>

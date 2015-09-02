@@ -345,7 +345,7 @@ iter.setUnion = function setUnion(lhs, rhs, comparer = (lhsValue, rhsValue) => (
  * @param {iterable} rhs The second source iterable.
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
  * @example
- * const it = iter([1, 3]).setIntersection([2, 3]);
+ * const it = iter.setIntersection([1, 3], [2, 3]);
  * // 'it' contains: 3
  * @returns {iter_type}
  */
@@ -774,6 +774,9 @@ iter.prototype.setUnion = function setUnion(otherIterable, comparer) {
  * Performs a set intersection of this iter with another iterable. Both source iterables must be sorted with no duplicate values.
  * @param {iterable} otherIterable The other iterable.
  * @param {comparer} [comparer] The comparer that was used to order the source iterables and which is used to order the returned iter. If not specified, this function uses the < and > operators to compare items.
+ * @example
+ * const it = iter([1, 3]).setIntersection([2, 3]);
+ * // 'it' contains: 3
  * @returns {iter_type}
  */
 iter.prototype.setIntersection = function setIntersection(otherIterable, comparer) {
