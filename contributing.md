@@ -12,7 +12,8 @@ The algorithms in iterjs should fit within these parameters:
 
 - The only requirement on objects should be the iterable requirement. If an algorithm requires additional data (e.g., knowing the length of an iterable, or the capability of iterating backwards, or random-access of values), then it belongs in an iterjs extension, and not in the core.
 - Algorithms in iterjs should not iterate the entire sequence before yielding their first value. These kind of "buffering" algorithms are certainly useful, but can cause surprising behavior.
-- Algorithms in iterjs should not iterate the sequence more than once. It is permissible to do a partial iteration, but not multiple iterations. `repeat` is an exception to this rule.
+- Algorithms in iterjs should not iterate the sequence more than once. It is permissible to do a partial iteration, but not multiple iterations.
+- If an algorithm **must** do either buffering or multiple iterations, it should prefer to do multiple iterations rather than buffering. `repeat` is an example of this rule.
 
 This means that some common algorithms such as `reverse`, `sort`, and `group` do not fit within the iterjs core scope. However, they are all excellent candidates for iterjs extensions.
  
