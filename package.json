@@ -17,6 +17,9 @@
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5"
   },
+  "peerDependencies": {
+    "babel-polyfill": "^6"
+  },
   "scripts": {
     "compile": "mkdirp dist/cjs && babel src -o dist/cjs/iter.js",
     "lint": "eslint src/**/*.js",
