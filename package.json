@@ -13,6 +13,7 @@
     "babel-core": "^6.5.2",
     "babel-preset-es2015": "^6.5.0",
     "eslint": "^2.2.0",
+    "in-publish": "^2.0.0",
     "jsdoc-to-markdown": "^1.3.3",
     "mkdirp": "^0.5.1",
     "mocha": "^2.4.5"
@@ -26,7 +27,7 @@
     "doc": "jsdoc2md src/**/*.js > api.md",
     "test": "mocha --bail --compilers js:babel-core/register --require babel-polyfill",
     "build": "npm run lint && npm run test && npm run doc && npm run compile",
-    "prepublish": "npm run build"
+    "prepublish": "not-in-install && npm run build || in-install"
   },
   "main": "./dist/cjs/iter.js",
   "typings": "./src/iter.d.ts",
