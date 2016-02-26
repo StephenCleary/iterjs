@@ -1,10 +1,13 @@
 ## Functions
+
 <dl>
 <dt><a href="#iter">iter([fnOrObject])</a> ⇒ <code><a href="#iter_type">iter_type</a></code></dt>
 <dd><p>Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter. This function can also be used to extend objects; if it is provided a &quot;this&quot; value, it will extend that object rather than creating a new iter.</p>
 </dd>
 </dl>
+
 ## Typedefs
+
 <dl>
 <dt><a href="#iterable">iterable</a> : <code>Array</code> | <code>String</code> | <code>Map</code> | <code>Set</code> | <code>Object</code></dt>
 <dd><p>An iterable; any object that has an @@iterator method.</p>
@@ -43,6 +46,7 @@
 <dd><p>A callback used to transform a value in an iter into a string.</p>
 </dd>
 </dl>
+
 <a name="iter"></a>
 ## iter([fnOrObject]) ⇒ <code>[iter_type](#iter_type)</code>
 Creates an iter from an iterable object or generator function. If no argument is passed, creates an empty iter. This function can also be used to extend objects; if it is provided a "this" value, it will extend that object rather than creating a new iter.
@@ -63,59 +67,61 @@ const it = iter(function *() {  yield 13;  yield 17;});// 'it' contains: 13,
 ```
 
 * [iter([fnOrObject])](#iter) ⇒ <code>[iter_type](#iter_type)</code>
-  * _instance_
-    * [.map(transform)](#iter+map) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.filter(predicate)](#iter+filter) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.take(numberOrPredicate)](#iter+take) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.skip(numberOrPredicate)](#iter+skip) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.do(process)](#iter+do) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.buffer(size)](#iter+buffer) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.window(size)](#iter+window) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.flatten()](#iter+flatten) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.filterConsecutiveDuplicates([equals])](#iter+filterConsecutiveDuplicates) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.scan(combine, [seed])](#iter+scan) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.concat(...others)](#iter+concat) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.repeat([count])](#iter+repeat) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.zip(...others)](#iter+zip) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.merge(otherIterable, [comparer])](#iter+merge) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setUnion(otherIterable, [comparer])](#iter+setUnion) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setIntersection(otherIterable, [comparer])](#iter+setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setSymmetricDifference(otherIterable, [comparer])](#iter+setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setDifference(otherIterable, [comparer])](#iter+setDifference) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.forEach([process])](#iter+forEach)
-    * [.count()](#iter+count) ⇒ <code>number</code>
-    * [.isEmpty()](#iter+isEmpty) ⇒ <code>boolean</code>
-    * [.first()](#iter+first) ⇒ <code>[find_result](#find_result)</code>
-    * [.last()](#iter+last) ⇒ <code>[find_result](#find_result)</code>
-    * [.at(index)](#iter+at) ⇒ <code>[find_result](#find_result)</code>
-    * [.find(predicate)](#iter+find) ⇒ <code>[find_result](#find_result)</code>
-    * [.every(predicate)](#iter+every) ⇒ <code>boolean</code>
-    * [.some(predicate)](#iter+some) ⇒ <code>boolean</code>
-    * [.min([comparer])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
-    * [.max([comparer])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
-    * [.minmax([comparer])](#iter+minmax) ⇒ <code>[minmax_result](#minmax_result)</code>
-    * [.fold(combine, [seed])](#iter+fold) ⇒ <code>\*</code>
-    * [.toArray()](#iter+toArray) ⇒ <code>Array</code>
-    * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>object</code>
-    * [.toMap(keySelector, [valueSelector])](#iter+toMap) ⇒ <code>Map</code>
-    * [.toSet()](#iter+toSet) ⇒ <code>Set</code>
-    * [.compare(otherIterable, [comparer])](#iter+compare) ⇒ <code>number</code>
-    * [.equal(otherIterable, [equals])](#iter+equal) ⇒ <code>boolean</code>
-    * [.findMismatch(otherIterable, [equals])](#iter+findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
-  * _static_
-    * [.values(...items)](#iter.values) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.range(start, [end])](#iter.range) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.repeat(value, [count])](#iter.repeat) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.concat(...iterables)](#iter.concat) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.zip(...iterables)](#iter.zip) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.compare(lhs, rhs, [comparer])](#iter.compare) ⇒ <code>number</code>
-    * [.equal(lhs, rhs, [equals])](#iter.equal) ⇒ <code>boolean</code>
-    * [.findMismatch(lhs, rhs, [equals])](#iter.findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
-    * [.merge(lhs, rhs, [comparer])](#iter.merge) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setUnion(lhs, rhs, [comparer])](#iter.setUnion) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setIntersection(lhs, rhs, [comparer])](#iter.setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setSymmetricDifference(lhs, rhs, [comparer])](#iter.setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
-    * [.setDifference(lhs, rhs, [comparer])](#iter.setDifference) ⇒ <code>[iter_type](#iter_type)</code>
+    * _instance_
+        * [.map(transform)](#iter+map) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.filter(predicate)](#iter+filter) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.take(numberOrPredicate)](#iter+take) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.skip(numberOrPredicate)](#iter+skip) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.do(process)](#iter+do) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.buffer(size)](#iter+buffer) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.window(size)](#iter+window) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.flatten([transform])](#iter+flatten) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.filterConsecutiveDuplicates([equals])](#iter+filterConsecutiveDuplicates) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.scan(combine, [seed])](#iter+scan) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.concat(...others)](#iter+concat) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.repeat([count])](#iter+repeat) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.zip(...others)](#iter+zip) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.merge(otherIterable, [comparer])](#iter+merge) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setUnion(otherIterable, [comparer])](#iter+setUnion) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setIntersection(otherIterable, [comparer])](#iter+setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setSymmetricDifference(otherIterable, [comparer])](#iter+setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setDifference(otherIterable, [comparer])](#iter+setDifference) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.interleave(otherIterable)](#iter+interleave) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.forEach([process])](#iter+forEach)
+        * [.count()](#iter+count) ⇒ <code>number</code>
+        * [.isEmpty()](#iter+isEmpty) ⇒ <code>boolean</code>
+        * [.first()](#iter+first) ⇒ <code>[find_result](#find_result)</code>
+        * [.last()](#iter+last) ⇒ <code>[find_result](#find_result)</code>
+        * [.at(index)](#iter+at) ⇒ <code>[find_result](#find_result)</code>
+        * [.find(predicate)](#iter+find) ⇒ <code>[find_result](#find_result)</code>
+        * [.every(predicate)](#iter+every) ⇒ <code>boolean</code>
+        * [.some(predicate)](#iter+some) ⇒ <code>boolean</code>
+        * [.min([comparer])](#iter+min) ⇒ <code>[find_result](#find_result)</code>
+        * [.max([comparer])](#iter+max) ⇒ <code>[find_result](#find_result)</code>
+        * [.minmax([comparer])](#iter+minmax) ⇒ <code>[minmax_result](#minmax_result)</code>
+        * [.fold(combine, [seed])](#iter+fold) ⇒ <code>\*</code>
+        * [.toArray()](#iter+toArray) ⇒ <code>Array</code>
+        * [.toObject(nameSelector, [valueSelector])](#iter+toObject) ⇒ <code>object</code>
+        * [.toMap(keySelector, [valueSelector])](#iter+toMap) ⇒ <code>Map</code>
+        * [.toSet()](#iter+toSet) ⇒ <code>Set</code>
+        * [.compare(otherIterable, [comparer])](#iter+compare) ⇒ <code>number</code>
+        * [.equal(otherIterable, [equals])](#iter+equal) ⇒ <code>boolean</code>
+        * [.findMismatch(otherIterable, [equals])](#iter+findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
+    * _static_
+        * [.values(...items)](#iter.values) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.range(start, [end])](#iter.range) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.repeat(value, [count])](#iter.repeat) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.concat(...iterables)](#iter.concat) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.zip(...iterables)](#iter.zip) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.compare(lhs, rhs, [comparer])](#iter.compare) ⇒ <code>number</code>
+        * [.equal(lhs, rhs, [equals])](#iter.equal) ⇒ <code>boolean</code>
+        * [.findMismatch(lhs, rhs, [equals])](#iter.findMismatch) ⇒ <code>[mismatch_result](#mismatch_result)</code>
+        * [.merge(lhs, rhs, [comparer])](#iter.merge) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setUnion(lhs, rhs, [comparer])](#iter.setUnion) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setIntersection(lhs, rhs, [comparer])](#iter.setIntersection) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setSymmetricDifference(lhs, rhs, [comparer])](#iter.setSymmetricDifference) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.setDifference(lhs, rhs, [comparer])](#iter.setDifference) ⇒ <code>[iter_type](#iter_type)</code>
+        * [.interleave(lhs, rhs)](#iter.interleave) ⇒ <code>[iter_type](#iter_type)</code>
 
 <a name="iter+map"></a>
 ### iter.map(transform) ⇒ <code>[iter_type](#iter_type)</code>
@@ -224,13 +230,22 @@ Applies a sliding window over the iter. The values of the returned iter are all 
 const it = iter([1, 2, 3, 4, 5, 6]).window(3);// 'it' contains: [1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6]
 ```
 <a name="iter+flatten"></a>
-### iter.flatten() ⇒ <code>[iter_type](#iter_type)</code>
-Takes an iter of iterables, and returns an iter that contains the values from each of those iterables.
+### iter.flatten([transform]) ⇒ <code>[iter_type](#iter_type)</code>
+Maps each value to an iterable, and returns an iter that contains the values from each of those iterables.
 
 **Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [transform] | <code>[transform](#transform)</code> | The transformation function to apply. If not specified, an identity function is used. |
+
 **Example**  
 ```js
-const it = iter([[1, 2], [3, 4, 5]]).flatten();// 'it' contains: [1, 2, 3, 4, 5]
+const it = iter([[1, 2], [3, 4, 5]]).flatten();// 'it' contains: 1, 2, 3, 4, 5
+```
+**Example**  
+```js
+const it = iter([2, 3, 4]).flatten(x => [x, x * 2]);// 'it' contains: 2, 4, 3, 6, 4, 8
 ```
 <a name="iter+filterConsecutiveDuplicates"></a>
 ### iter.filterConsecutiveDuplicates([equals]) ⇒ <code>[iter_type](#iter_type)</code>
@@ -393,6 +408,28 @@ Performs a set difference of this iter with another iterable, returning an iter 
 **Example**  
 ```js
 const it = iter([1, 3]).setDifference([2, 3]);// 'it' contains: 1
+```
+<a name="iter+interleave"></a>
+### iter.interleave(otherIterable) ⇒ <code>[iter_type](#iter_type)</code>
+Interleaves the values of this iterable with another iterable, ending when either iterable is completed. The first and last values in the resulting iter are always from this iterable.
+
+**Kind**: instance method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| otherIterable | <code>[iterable](#iterable)</code> | The other iterable. A common usage pattern is to pass an infinitely-repeating iter. |
+
+**Example**  
+```js
+const it = iter([1, 2, 3]).interleave(['a', 'b', 'c']);// 'it' contains: 1, 'a', 2, 'b', 3
+```
+**Example**  
+```js
+const it = iter([1, 2, 3]).interleave(['a']);// 'it' contains: 1, 'a', 2
+```
+**Example**  
+```js
+const it = iter([1, 2, 3]).interleave(iter.repeat('a'));// 'it' contains: 1, 'a', 2, 'a', 3
 ```
 <a name="iter+forEach"></a>
 ### iter.forEach([process])
@@ -579,7 +616,7 @@ const result = iter([1, 2, 3, 4]).fold((x, y) => x + y);// result: 10
 ```
 **Example**  
 ```js
-const result = iter([1, 2, 3, 4]).scan((x, y) => x + y, 13);// result: 23
+const result = iter([1, 2, 3, 4]).fold((x, y) => x + y, 13);// result: 23
 ```
 <a name="iter+toArray"></a>
 ### iter.toArray() ⇒ <code>Array</code>
@@ -919,6 +956,29 @@ Performs a set difference of two iterables, returning an iter containing only va
 **Example**  
 ```js
 const it = iter.setDifference([1, 3], [2, 3]);// 'it' contains: 1
+```
+<a name="iter.interleave"></a>
+### iter.interleave(lhs, rhs) ⇒ <code>[iter_type](#iter_type)</code>
+Interleaves the values of two iterables, ending when either iterable is completed. The first and last values in the resulting iter are always from the first iterable.
+
+**Kind**: static method of <code>[iter](#iter)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| lhs | <code>[iterable](#iterable)</code> | The first source iterable. |
+| rhs | <code>[iterable](#iterable)</code> | The second source iterable. A common usage pattern is to pass an infinitely-repeating iter. |
+
+**Example**  
+```js
+const it = iter.interleave([1, 2, 3], ['a', 'b', 'c']);// 'it' contains: 1, 'a', 2, 'b', 3
+```
+**Example**  
+```js
+const it = iter.interleave([1, 2, 3], ['a']);// 'it' contains: 1, 'a', 2
+```
+**Example**  
+```js
+const it = iter.interleave([1, 2, 3], iter.repeat('a'));// 'it' contains: 1, 'a', 2, 'a', 3
 ```
 <a name="iterable"></a>
 ## iterable : <code>Array</code> &#124; <code>String</code> &#124; <code>Map</code> &#124; <code>Set</code> &#124; <code>Object</code>

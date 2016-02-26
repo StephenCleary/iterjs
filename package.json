@@ -16,13 +16,14 @@
     "gulp-concat": "^2.6.0",
     "gulp-jsdoc-to-markdown": "^1.1.1",
     "gulp-mocha": "^2.1.3",
-    "jsdoc-to-markdown": "^1.1.1",
+    "jsdoc-to-markdown": "^1.3.3",
     "mkdirp": "^0.5.1",
     "mocha": "^2.2.5"
   },
   "scripts": {
     "compile": "mkdirp dist/cjs && babel src -o dist/cjs/iter.js",
     "lint": "eslint src/**/*.js",
+    "doc": "jsdoc2md src/**/*.js > api.md",
     "test": "mocha --bail --compilers js:babel/register"
   },
   "main": "./dist/cjs/iter.js",
