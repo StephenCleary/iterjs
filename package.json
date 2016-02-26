@@ -9,20 +9,23 @@
   "description": "An ES6 library for working with iterables and generator functions",
   "license": "MIT",
   "devDependencies": {
-    "babel": "^5.8.21",
+    "babel-cli": "^6.5.1",
+    "babel-preset-es2015": "^6.5.0",
     "eslint": "^2.2.0",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
     "gulp-jsdoc-to-markdown": "^1.1.1",
     "gulp-mocha": "^2.1.3",
     "jsdoc-to-markdown": "^1.1.1",
+    "mkdirp": "^0.5.1",
     "mocha": "^2.2.5"
   },
   "scripts": {
+    "compile": "mkdirp dist/cjs && babel src -o dist/cjs/iter.js",
     "lint": "eslint src/**/*.js",
     "test": "mocha --bail --compilers js:babel/register"
   },
-  "main": "./src/iter.js",
+  "main": "./dist/cjs/iter.js",
   "typings": "./src/iter.d.ts",
   "keywords": [
     "iterable",
