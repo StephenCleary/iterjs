@@ -895,7 +895,7 @@ iter.prototype.forEach = function forEach(process = () => {}) {
  */
 iter.prototype.count = function count() {
     let result = 0;
-    for (let item of this) {
+    for (let item of this) { // eslint-disable-line no-unused-vars
         ++result;
     }
     return result;
