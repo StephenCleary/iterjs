@@ -22,6 +22,7 @@
     "test": "mocha --bail --compilers js:babel/register"
   },
   "main": "./src/iter.js",
+  "typings": "./src/iter.d.ts",
   "keywords": [
     "iterable",
     "iter",

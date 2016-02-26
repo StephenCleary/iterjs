@@ -464,6 +464,44 @@ iter.setDifference = function setDifference(lhs, rhs, comparer = (lhsValue, rhsV
     });
 };
 
+/**
+ * Interleaves the values of two iterables, ending when either iterable is completed. The first and last values in the resulting iter are always from the first iterable.
+ * @param {iterable} lhs The first source iterable.
+ * @param {iterable} rhs The second source iterable. A common usage pattern is to pass an infinitely-repeating iter.
+ * @example
+ * const it = iter.interleave([1, 2, 3], ['a', 'b', 'c']);
+ * // 'it' contains: 1, 'a', 2, 'b', 3
+ * @example
+ * const it = iter.interleave([1, 2, 3], ['a']);
+ * // 'it' contains: 1, 'a', 2
+ * @example
+ * const it = iter.interleave([1, 2, 3], iter.repeat('a'));
+ * // 'it' contains: 1, 'a', 2, 'a', 3
+ * @returns {iter_type}
+ */
+iter.interleave = function interleave(lhs, rhs) {
+    return iter(function *() {
+        const iterL = lhs[Symbol.iterator]();
+        const iterR = rhs[Symbol.iterator]();
+        let nextL = iterL.next();
+        if (nextL.done) {
+            return;
+        }
+        while (true) {
+            yield nextL.value;
+            nextL = iterL.next();
+            if (nextL.done) {
+                break;
+            }
+            const nextR = iterR.next();
+            if (nextR.done) {
+                break;
+            }
+            yield nextR.value;
+        }
+    });
+};
+
 /* Enjoy the world of iter */
 
 /**
@@ -627,16 +665,20 @@ iter.prototype.window = function window(size) {
 };
 
 /**
- * Takes an iter of iterables, and returns an iter that contains the values from each of those iterables.
+ * Maps each value to an iterable, and returns an iter that contains the values from each of those iterables.
+ * @param {transform} [transform] The transformation function to apply. If not specified, an identity function is used.
  * @example
  * const it = iter([[1, 2], [3, 4, 5]]).flatten();
- * // 'it' contains: [1, 2, 3, 4, 5]
+ * // 'it' contains: 1, 2, 3, 4, 5
+ * @example
+ * const it = iter([2, 3, 4]).flatten(x => [x, x * 2]);
+ * // 'it' contains: 2, 4, 3, 6, 4, 8
  * @returns {iter_type}
  */
-iter.prototype.flatten = function flatten() {
+iter.prototype.flatten = function flatten(transform = x => x) {
     const self = this;
     return iter(function *() {
-        for (let sequence of self) {
+        for (let sequence of self.map(transform)) {
             yield* sequence;
         }
     });
@@ -807,6 +849,24 @@ iter.prototype.setSymmetricDifference = function setSymmetricDifference(otherIte
  */
 iter.prototype.setDifference = function setDifference(otherIterable, comparer) {
     return iter.setDifference(this, otherIterable, comparer);
+};
+
+/**
+ * Interleaves the values of this iterable with another iterable, ending when either iterable is completed. The first and last values in the resulting iter are always from this iterable.
+ * @param {iterable} otherIterable The other iterable. A common usage pattern is to pass an infinitely-repeating iter.
+ * @example
+ * const it = iter([1, 2, 3]).interleave(['a', 'b', 'c']);
+ * // 'it' contains: 1, 'a', 2, 'b', 3
+ * @example
+ * const it = iter([1, 2, 3]).interleave(['a']);
+ * // 'it' contains: 1, 'a', 2
+ * @example
+ * const it = iter([1, 2, 3]).interleave(iter.repeat('a'));
+ * // 'it' contains: 1, 'a', 2, 'a', 3
+ * @returns {iter_type}
+*/
+iter.prototype.interleave = function interleave(otherIterable) {
+    return iter.interleave(this, otherIterable);
 };
 
 /* Leave the world of iter */
@@ -1051,7 +1111,7 @@ iter.prototype.minmax = function minmax(comparer = (lhsValue, rhsValue) => (lhsV
  * const result = iter([1, 2, 3, 4]).fold((x, y) => x + y);
  * // result: 10
  * @example
- * const result = iter([1, 2, 3, 4]).scan((x, y) => x + y, 13);
+ * const result = iter([1, 2, 3, 4]).fold((x, y) => x + y, 13);
  * // result: 23
  * @returns {*}
  */
