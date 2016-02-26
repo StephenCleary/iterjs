@@ -10,21 +10,18 @@
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.5.1",
+    "babel-polyfill": "^6.5.0",
     "babel-preset-es2015": "^6.5.0",
     "eslint": "^2.2.0",
-    "gulp": "^3.9.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-jsdoc-to-markdown": "^1.1.1",
-    "gulp-mocha": "^2.1.3",
     "jsdoc-to-markdown": "^1.3.3",
     "mkdirp": "^0.5.1",
-    "mocha": "^2.2.5"
+    "mocha": "^2.4.5"
   },
   "scripts": {
     "compile": "mkdirp dist/cjs && babel src -o dist/cjs/iter.js",
     "lint": "eslint src/**/*.js",
     "doc": "jsdoc2md src/**/*.js > api.md",
-    "test": "mocha --bail --compilers js:babel/register"
+    "test": "mocha --bail --compilers js:babel-core/register --require babel-polyfill"
   },
   "main": "./dist/cjs/iter.js",
   "typings": "./src/iter.d.ts",

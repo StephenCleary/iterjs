@@ -1,8 +1,7 @@
 version: 0.3.0.{build}
 install:
 - ps: Install-Product node 0
-- npm install gulp --global --no-optional --silent
 - npm install --no-optional --silent
 build: off
 test_script:
-- gulp
+- npm run build
