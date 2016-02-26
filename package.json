@@ -21,7 +21,9 @@
     "compile": "mkdirp dist/cjs && babel src -o dist/cjs/iter.js",
     "lint": "eslint src/**/*.js",
     "doc": "jsdoc2md src/**/*.js > api.md",
-    "test": "mocha --bail --compilers js:babel-core/register --require babel-polyfill"
+    "test": "mocha --bail --compilers js:babel-core/register --require babel-polyfill",
+    "build": "npm run lint && npm run test && npm run doc && npm run compile",
+    "prepublish": "npm run build"
   },
   "main": "./dist/cjs/iter.js",
   "typings": "./src/iter.d.ts",
