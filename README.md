@@ -7,19 +7,17 @@ An ES6 library for working with iterables and generator functions.
 
 ## Quickstart
 
-Install from npm:
+Install from npm (or bower):
 
     npm install iterjs
-    
-or bower:
-
-    bower install iterjs
     
 Then, import the iterjs library:
 
     import iter from 'iterjs';
 
-(iterjs is an ES6 library, and yes, it works fine with Babel).
+Since iterjs uses ES6 generators, you'll need to also import the Babel polyfill at some point in your application:
+
+    import 'babel-polyfill';
 
 ## About iters
 
